@@ -1,0 +1,21 @@
+{
+  "name": "ehome",
+  "version": "0.0.0",
+  "authors": [
+    "b0rangskards <waynearila@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+    "dependencies": {
+        "jquery": "2.1.3",
+        "bootstrap": "3.3.2",
+        "fontawesome": "4.3.0",
+        "semantic-ui-loader": "1.12.3"
+    }
+}

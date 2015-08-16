@@ -1,0 +1,28 @@
+actor: Tester
+paths:
+    tests: tests
+    log: tests/_output
+    data: tests/_data
+    support: tests/_support
+    envs: tests/_envs
+settings:
+    bootstrap: _bootstrap.php
+    colors: true
+    memory_limit: 1024M
+coverage:
+    enabled: true
+    remote: true
+    include:
+        - app/*
+extensions:
+    enabled:
+        - Codeception\Extension\RunFailed
+modules:
+    config:
+        Db:
+            dsn: 'mysql:host=127.0.0.1:33060;dbname=ehome_testing'
+            user: 'homestead'
+            password: 'secret'
+            dump: database/dump.sql
+        Laravel5:
+            environment_file: '.env.testing'
