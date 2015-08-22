@@ -3,5 +3,7 @@
 /resources/assets/bower
 Homestead.yaml
 .env
+.env.testing
+.env.production
 
 tests/_output/*

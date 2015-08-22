@@ -9,8 +9,18 @@ use App\Http\Controllers\Controller;
 
 class PublicController extends Controller
 {
-    public function showLandingPage()
+	function __construct()
+	{
+		$this->middleware('guest', ['except' => 'showErrorPage']);
+	}
+
+	public function showLandingPage()
     {
 	    return view('public.index');
     }
+
+	public function showErrorPage()
+	{
+		return view('public.error');
+	}
 }

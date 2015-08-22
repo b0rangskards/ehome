@@ -20,7 +20,7 @@ class RegistrationPage
 
 	public static $passwordField = 'input[name=password]';
 
-	public static $signupButton = 'SIGN UP NOW!';
+	public static $signupButton = 'Sign Up Now';
 
     /**
      * Declare UI map for this page here. CSS or XPath allowed.

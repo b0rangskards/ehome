@@ -2764,7 +2764,7 @@ textarea.autosize {
 .form-group .form-control ~ .form-control-line {
   position: absolute;
   left: 0;
-  bottom: 0;
+  bottom: 0px;
   width: 100%;
   pointer-events: none;
 }
@@ -2783,7 +2783,7 @@ textarea.autosize {
   transition: 0.2s ease all;
 }
 .form-group .form-control ~ label {
-  top: 0;
+  top: -12px;
   margin-bottom: 0;
   font-size: 12px;
   opacity: 0.5;
@@ -2802,12 +2802,12 @@ textarea.autosize {
   left: 0;
 }
 .floating-label .form-control ~ label {
-  top: 19px;
+  top: 0px;
   font-size: 16px;
 }
 .floating-label .form-control:focus ~ label,
 .floating-label .form-control.dirty ~ label {
-  top: 0px;
+  top: -25px;
   font-size: 12px !important;
 }
 .input-sm {
@@ -6784,6 +6784,7 @@ sub.badge {
   margin-bottom: 0;
   font-size: 12px;
   text-shadow: none;
+  background-color:transparent;
 }
 .breadcrumb > li {
   opacity: 0.8;
@@ -7987,6 +7988,9 @@ li.L8 {
   list-style-type: none;
 }
 /* Alternate shading for lines */
+.big-icon {
+    font-size: 100px;
+}
 #signin_page {
     background: url(../images/2_corporate/bg.png) no-repeat center center fixed;
     -webkit-background-size: cover;
@@ -8009,4 +8013,38 @@ li.L8 {
     background-color: #ecf0f1;
     padding: 30px;
     border-radius: 5px;
+}
+#error_panel {
+    background-color: #ecf0f1;
+    padding: 30px;
+    border-radius: 5px;
+    text-align: center;
+}
+#error_panel .error-icon {
+    color: #e74c3c;
+    padding-bottom: 0px;
+}
+input:focus,select:focus {
+    border-color: transparent !important;
+    box-shadow: none !important;
+    outline: 0 none !important;
+}
+input[type=submit]:active, button:active {
+    color: #ffffff;
+    background-color: #077871; !important;
+    border-color: #076e68; !important;
+}
+.btn-flat.btn-primary {
+    color: #0aa89e;
+    font-weight: 600;
+    line-height: 1.42857143;
+    font-size: 14px;
+    letter-spacing: 0.8px;
+}
+/* Remove dropdown arrow on select element */
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    text-indent: 1px;
+    text-overflow: '';
 }

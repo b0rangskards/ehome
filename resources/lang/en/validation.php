@@ -85,6 +85,12 @@ return [
     | specify a specific custom language line for a given attribute rule.
     |
     */
+	'empty_when' => 'You cant fill both fields. Must select either :attribute or :other.',
+
+	/* Task Member Validation (array input) */
+	'members_exists' => 'Must assign task to a member that exists.',
+
+	'coordinates' => 'Coordinates is invalid.',
 
     'custom' => [
         'attribute-name' => [

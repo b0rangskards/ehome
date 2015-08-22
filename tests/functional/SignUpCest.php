@@ -3,6 +3,7 @@ use App\User;
 use \FunctionalTester;
 use Page\MemberDashboardPage;
 use Page\RegistrationPage;
+use Page\SignInPage;
 
 class SignUpCest
 {
@@ -16,8 +17,8 @@ class SignUpCest
     // tests
     public function try_to_sign_up_with_valid_information(FunctionalTester $I)
     {
-	    $I->am('a guest');
-	    $I->wantTo('sign up for ehome account');
+	    $I->am('a Guest');
+	    $I->wantTo('Sign Up for ehome Account');
 
 	    $I->amOnPage(RegistrationPage::$URL);
 	    $I->fillField(RegistrationPage::$firstnameField, $this->user->firstname);
@@ -29,15 +30,37 @@ class SignUpCest
 	    $I->fillField(RegistrationPage::$passwordField, 'password1234');
 	    $I->click(RegistrationPage::$signupButton);
 
-	    $I->seeCurrentUrlEquals(MemberDashboardPage::$URL);
-	    $I->see(MemberDashboardPage::$welcomeMessage);
-
 	    $I->seeRecord('users', [
 		   'firstname' => $this->user->firstname,
 		   'lastname' => $this->user->lastname,
-		   'email' => $this->user->email
+		   'middleinitial' => $this->user->middleinitial,
+		   'gender' => $this->user->gender,
+		   'mobile_no' => $this->user->mobile_no,
+		   'email' => $this->user->email,
+		   'role' => Config::get('enums.roles.hh_head')
 	    ]);
-
-	    $I->assertTrue(Auth::check());
     }
+
+	public function try_to_register_with_invalid_data(FunctionalTester $I)
+	{
+		$I->am('a Guest');
+		$I->wantTo('Sign Up for ehome Account with invalid data');
+		$I->expectTo('see an error');
+
+		$I->amOnPage(RegistrationPage::$URL);
+		$I->fillField(RegistrationPage::$firstnameField, $this->user->firstname);
+		$I->fillField(RegistrationPage::$lastnameField, $this->user->lastname);
+		$I->fillField(RegistrationPage::$middleinitialField, $this->user->middleinitial);
+		$I->click(RegistrationPage::$signupButton);
+
+		$I->dontSeeRecord('users', [
+			'firstname' => $this->user->firstname,
+			'lastname' => $this->user->lastname,
+			'middleinitial' => $this->user->middleinitial,
+			'gender' => $this->user->gender,
+			'mobile_no' => $this->user->mobile_no,
+			'email' => $this->user->email,
+			'role' => Config::get('enums.roles.hh_head')
+		]);
+	}
 }

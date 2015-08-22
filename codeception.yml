@@ -20,7 +20,7 @@ extensions:
 modules:
     config:
         Db:
-            dsn: 'mysql:host=127.0.0.1:33060;dbname=ehome_testing'
+            dsn: 'mysql:host=192.168.10.10:3306;dbname=ehome_testing'
             user: 'homestead'
             password: 'secret'
             dump: database/dump.sql

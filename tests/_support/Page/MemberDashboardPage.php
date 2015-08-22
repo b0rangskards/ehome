@@ -4,9 +4,7 @@ namespace Page;
 class MemberDashboardPage
 {
     // include url of current page
-    public static $URL = 'dashboard';
-
-	public static $welcomeMessage = 'Welcome to eHome!';
+    public static $URL = '/home';
 
     /**
      * Declare UI map for this page here. CSS or XPath allowed.

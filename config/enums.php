@@ -3,8 +3,8 @@
 return [
 	'roles' => [
 		'admin' => 1,
-		'household_head' => '2',
-		'household_member' => '3'
+		'hh_head' => 2,
+		'hh_member' => 3
 	],
 	'gender' => [
 		'male' => 'Male',

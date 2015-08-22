@@ -1,10 +1,16 @@
 <?php
 
-use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 
-class DatabaseSeeder extends Seeder
+class DatabaseSeeder extends BaseSeeder
 {
+	protected $tables = [
+		'users',
+		'households',
+		'household_members',
+		'task_types'
+	];
+
     /**
      * Run the database seeds.
      *
@@ -12,10 +18,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        Model::unguard();
+	    $this->cleanDatabase();
 
-        // $this->call(UserTableSeeder::class);
+	    Model::unguard();
 
-        Model::reguard();
+	    $this->seedTables();
+
+	    Model::reguard();
     }
 }

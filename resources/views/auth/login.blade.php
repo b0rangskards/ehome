@@ -7,17 +7,6 @@
 
     {!! HTML::style('http://fonts.googleapis.com/css?family=Roboto:300italic,400italic,300,400,500,700,900') !!}
     {!! HTML::style('css/vendor.css') !!}
-    <style>
-    .pixfort_corporate_2 .header_style{
-        background-color: #414a52;
-
-    }
-    .pixfort_corporate_2 .header_area{
-        position: absolute;
-        padding-top: 35px;
-        z-index: 2;
-    }
-    </style>
 </head>
 <body id="signin_page">
 
@@ -32,14 +21,23 @@
 							<br/>
 							<span class="text-lg text-bold text-primary">Sign In to Continue</span>
 							<br/><br/>
-							<form class="form floating-label" action="../../html/dashboards/dashboard.html" accept-charset="utf-8" method="post">
-								<div class="form-group">
-									<input type="text" class="form-control" id="username" name="username">
-									<label for="username">Username</label>
+
+							@include('flash::message')
+
+							{!! Form::open(['route' => 'auth.login', 'class' => 'form floating-label']) !!}
+								{{-- Email --}}
+								<div class="form-group {!! $errors->has('email')?'has-error':'' !!}">
+									{!! Form::email('email', null, ['class' => 'form-control']) !!}
+									{!! Form::label('email', 'Email') !!}
+									<p class="help-block">{!! $errors->first('email') !!}</p>
+								</div>
+								{{-- Password --}}
+								<div class="form-group {!! $errors->has('password')?'has-error':'' !!}">
+									{!! Form::password('password', ['class' => 'form-control']) !!}
+									{!! Form::label('password', 'Password') !!}
+									<p class="help-block">{!! $errors->first('password') !!}</p>
 								</div>
 								<div class="form-group">
-									<input type="password" class="form-control" id="password" name="password">
-									<label for="password">Password</label>
 									<p class="help-block"><a href="#">Forgotten?</a></p>
 								</div>
 								<br/>
@@ -50,17 +48,18 @@
 												<input type="checkbox"> <span>Remember me</span>
 											</label>
 										</div>
-									</div><!--end .col -->
+									</div>
+									{{-- Submit Button --}}
 									<div class="col-xs-6 text-right">
-										<button class="btn btn-primary btn-raised" type="submit">Login</button>
-									</div><!--end .col -->
-								</div><!--end .row -->
-							</form>
-						</div><!--end .col -->
+									    {!! Form::submit('Login', ['class' => 'btn btn-primary btn-raised']) !!}
+									</div>
+								</div>
+							{!! Form::close() !!}
 
-					</div><!--end .row -->
-				</div><!--end .card-body -->
-			</div><!--end .card -->
+						</div>
+					</div>
+				</div>
+			</div>
 		</section>
 				<!-- END LOGIN SECTION -->
 

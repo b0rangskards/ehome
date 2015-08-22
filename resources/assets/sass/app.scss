@@ -1,2 +1,66 @@
-// @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+#setup-household-map, #update-household-map {
+  width: 100%;
+  min-height: 300px;
+}
+.inline-block {
+  display:inline-block;
+}
+.pad-left-5{
+  padding-left: 5px;
+}
+.link-look {
+  background: none !important;
+  border: none;
+  padding: 0 !important;
+  font: inherit;
+  /*border is optional*/
+  cursor: pointer;
+}
+.nav-no-border li a{
+ border-bottom: none;
+}
+.nav-styled {
+  margin-top: 15px;
+  li a {
+    text-transform: none;
+    font-weight: 600;
+  }
+}
+.tab-styled {
+  .tab-pane {
+    padding: 10px 20px;
+  }
+}
+.nav-action {
+  color: #777;
 
+  span.action-btn-right a {
+    font-size: 15px;
+    float: right;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+}
+.card-head-form {
+  padding-top: 20px;
+}
+.mg-tp-20 {
+  margin-top: 20px;
+}
+.mg-rt-20 {
+  margin-right: 20px;
+}
+.pd-lt-20 {
+  padding-left: 20px;
+}
+.weight600 {
+  font-weight: 600;
+}
+.border-none {
+  border:none;
+}
+.hint {
+  color: #777;
+  font-size: 12px;
+  opacity: 0.6;
+}

@@ -1,5 +1,8 @@
 <?php
 
+// Workaround for Xdebug Max Nesting Level
+ini_set('xdebug.max_nesting_level',150);
+
 return [
 
     /*
@@ -144,10 +147,14 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 	    Laracasts\Flash\FlashServiceProvider::class,
+	    App\Http\ViewComposers\ComposerServiceProvider::class,
+	    App\Providers\ValidatorServiceProvider::class,
+	    Intervention\Image\ImageServiceProvider::class,
 	    /*
 	     * Development Service Providers...
 	     */
 	    Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+	    Barryvdh\Debugbar\ServiceProvider::class,
     ],
 
     /*
@@ -199,6 +206,7 @@ return [
 	    'Form'      => Illuminate\Html\FormFacade::class,
 	    'Flash'     => Laracasts\Flash\Flash::class,
 	    'Carbon'    => Carbon\Carbon::class,
+	    'Image'     => Intervention\Image\Facades\Image::class,
     ],
 
 ];
