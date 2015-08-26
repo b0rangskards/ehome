@@ -24,12 +24,8 @@ class ActivateAccountRequest extends Request
     public function rules()
     {
         return [
-//            'activationCode' => 'required|exists:users,activation_code'
+	        'password'              => 'required|min:6|confirmed',
+	        'password_confirmation' => 'required',
         ];
     }
-
-	protected function getValidatorInstance()
-	{
-		dd($this->input());
-	}
 }

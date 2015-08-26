@@ -2783,7 +2783,7 @@ textarea.autosize {
   transition: 0.2s ease all;
 }
 .form-group .form-control ~ label {
-  top: -12px;
+  top: -5px;
   margin-bottom: 0;
   font-size: 12px;
   opacity: 0.5;
@@ -2802,12 +2802,12 @@ textarea.autosize {
   left: 0;
 }
 .floating-label .form-control ~ label {
-  top: 0px;
+  top: 20px;
   font-size: 16px;
 }
 .floating-label .form-control:focus ~ label,
 .floating-label .form-control.dirty ~ label {
-  top: -25px;
+  top: 0px;
   font-size: 12px !important;
 }
 .input-sm {
@@ -8048,3 +8048,27 @@ select {
     text-indent: 1px;
     text-overflow: '';
 }
+
+/* Remove the bullet points on list errors */
+.errors > ul {
+    list-style-type: none;
+}
+
+/* Notifications UL Nav */
+.notifications-ul {
+    width: 380px;
+}
+.notifications-ul li a.notification, .notifications-list li{
+ background-color: #edeff5;
+}
+.notifications-ul li a .time {
+    font-size: 11px;
+    font-style: italic;
+    font-weight: bold;
+    position: absolute;
+    right: 20px;
+}
+.notifications-ul li a.seen, .notifications-list li.seen {
+ background-color: #ffffff;
+}
+

@@ -55,18 +55,18 @@ class HouseholdMembersController extends Controller
         return view('members.household-members.create', compact('breadcrumbPages'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  Request  $request
-     * @return Response
-     */
+	/**
+	 * Store a newly created resource in storage.
+	 *
+	 * @param AddNewHouseholdMemberRequest $request
+	 * @param $household
+	 * @return Response
+	 */
     public function store(AddNewHouseholdMemberRequest $request, $household)
     {
-	    // add extra param head id
-	    if ( !$request->has('household_id') ) {
-		    $request->merge(['household_id' => $household]);
-	    }
+	    if(is_null($household)) return Response::json(['message' => 'Must have a Household to continue.'], 422);
+
+	    $request->merge(['household' => $household]);
 
 	    $this->dispatchFrom(AddNewHouseholdMemberJob::class, $request);
 

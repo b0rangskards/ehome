@@ -9,5 +9,9 @@ return [
 	'gender' => [
 		'male' => 'Male',
 		'female' => 'Female'
-	]
+	],
+	'task_status' => [
+		'almost_there' => 'Almost there.',
+		'done'         => 'Done',
+	],
 ];

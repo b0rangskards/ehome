@@ -35,10 +35,5 @@
         @include('layouts.partials.member-side-nav')
 	</div>
 	<!-- END BASE -->
-    {!! HTML::script('https://maps.googleapis.com/maps/api/js?v=3.exp') !!}
-    {!! HTML::script('js/vendor.js') !!}
-    {!! HTML::script('js/gmap3.min.js') !!}
-    {!! HTML::script('js/app.js') !!}
 
-</body>
-</html>
+@include('layouts.partials.member-footer')

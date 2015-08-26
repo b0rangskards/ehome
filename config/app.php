@@ -150,6 +150,7 @@ return [
 	    App\Http\ViewComposers\ComposerServiceProvider::class,
 	    App\Providers\ValidatorServiceProvider::class,
 	    Intervention\Image\ImageServiceProvider::class,
+	    Laracasts\Utilities\JavaScript\JavascriptServiceProvider::class,
 	    /*
 	     * Development Service Providers...
 	     */
@@ -207,6 +208,9 @@ return [
 	    'Flash'     => Laracasts\Flash\Flash::class,
 	    'Carbon'    => Carbon\Carbon::class,
 	    'Image'     => Intervention\Image\Facades\Image::class,
+	    'FileHelper'=> App\Helpers\FileHelper::class,
+	    'JavaScript'=> Laracasts\Utilities\JavaScript\JavaScriptFacade::class,
+
     ],
 
 ];

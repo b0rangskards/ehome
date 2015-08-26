@@ -32,7 +32,7 @@ class CheckHouseholdSetup
      */
     public function handle($request, Closure $next)
     {
-	    if(is_null($this->auth->user()->household)) {
+	    if($this->auth->user()->isHead() && is_null($this->auth->user()->household)) {
 		    return redirect(route('household.create'));
 	    }
 

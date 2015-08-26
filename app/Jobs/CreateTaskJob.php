@@ -2,9 +2,11 @@
 
 namespace App\Jobs;
 
+use App\Events\TaskHasCreated;
 use App\Helpers\FileHelper;
 use App\Household;
 use App\Jobs\Job;
+use App\Notification;
 use App\Repositories\TaskRepository;
 use App\Task;
 use File;
@@ -14,42 +16,39 @@ use Intervention\Image\Facades\Image;
 
 class CreateTaskJob extends Job implements SelfHandling
 {
-	protected $name, $type, $due_date, $recurring_date, $priority,
-			  $task_members, $description, $coordinates, $notes;
+	protected $name, $due_at, $recurring_at, $priority,
+			  $task_members, $description, $coordinates;
 
 	protected $household_id;
 
 	protected $subtasks;
+
+	protected $repository;
 
 	/**
 	 * Create a new job instance.
 	 *
 	 * @param $household_id
 	 * @param $name
-	 * @param $type
-	 * @param $due_date
-	 * @param $recurring_date
+	 * @param $due_at
+	 * @param $recurring_at
 	 * @param $priority
 	 * @param $task_members
 	 * @param $description
 	 * @param $coordinates
-	 * @param $notes
 	 * @param $subtasks
 	 */
-	function __construct($household_id, $name, $type, $due_date, $recurring_date,
-	                     $priority, $task_members, $description, $coordinates,
-	                     $notes, $subtasks)
+	function __construct($household_id, $name, $due_at, $recurring_at,
+	                     $priority, $task_members, $description, $coordinates, $subtasks)
 	{
 		$this->household_id = $household_id;
 		$this->name = $name;
-		$this->type = $type;
-		$this->due_date = $due_date;
-		$this->recurring_date = $recurring_date;
+		$this->due_at = $due_at;
+		$this->recurring_at = $recurring_at;
 		$this->priority = $priority;
 		$this->task_members = $task_members;
 		$this->description = $description;
 		$this->coordinates = $coordinates;
-		$this->notes = $notes;
 		$this->subtasks = $subtasks;
 	}
 
@@ -63,15 +62,27 @@ class CreateTaskJob extends Job implements SelfHandling
 	 * get all the user id of members then add !done
 	 * add member tasks maybe you can do sync using many to many eloquent !done
 	 *
-	 * add subtasks
-	 * get all the numeric index of subtasks form data
-	 * and treat it as user id
-	 * and add members
+	 * add subtasks !done
+	 * get all the numeric index of subtasks form data !done
+	 * and treat it as user id !done
+	 * and add members !done
 	 *
 	 * fire an event for taskcreate
-	 * event will send notification to user member (it will create to notifications table)
-	 *
-	 * create notes if task has notes
+	 * an event will send notification to user member
+	 *  1. create a notification title for task creation
+	 *  2. generate a link to show task
+	 *  3. notification record must have from and to userid
+	 *     so get the household head id and task member user id
+	 *  4. persist notification
+	 * an event will send SMS to task members that has sms number
+	 *  1. create a sms message prompting the member for new task and a confirmation message for task
+	 *      ex. "You have a new task from {$household_head_name}. \n
+	 *          {$task_name} \n
+	 *          ---------------- \n
+	 *          Accept Task? \n
+	 *          Reply YES to accept and No to decline task."
+	 *  2. maybe persist it in database (need to create table)
+	 *  3. send sms
 	 */
 
 	/**
@@ -82,100 +93,63 @@ class CreateTaskJob extends Job implements SelfHandling
 	 */
     public function handle(TaskRepository $taskRepository)
     {
+	    $this->repository = $taskRepository;
+
         $task = Task::createTask(
 			$this->household_id,
 			$this->name,
-			$this->type,
-			$this->due_date,
-			$this->recurring_date,
+			$this->due_at,
+			$this->recurring_at,
 			$this->priority,
-			null, // parent id is null
+			null, // parent id is null for main task
 			$this->description,
 			$this->coordinates
         );
-		// Save image if any
+
+		// Save image if any...
 	    if(Input::hasFile('image'))
 	    {
 			$file = Input::file('image');
-		    $fileName = $this->uploadImage($file, $this->name, $this->household_id);
+		    $fileName = FileHelper::uploadImage($this->name, $this->household_id, $file->getRealPath(), $file->getClientOriginalExtension());
 
 		    $task->image = $fileName;
 	    }
 
+	    // Persist Task
 	    $taskRepository->save($task, $this->task_members);
 
-	    foreach($this->subtasks as $index => $subtask)
-	    {
-			$subtaskObj = Task::createTask(
-					$this->household_id,
-					$subtask['name'],
-					$this->type,
-					$this->due_date,
-					$this->recurring_date,
-					$this->priority,
-					$task->id, // parent id
-					$subtask['description']
-			);
+	    // Create Subtask if any...
+		$this->createSubtask($this->subtasks, $task);
 
-		    if ( !is_null($subtask['image']))
-		    {
-			    $subtask_tmp = $_FILES['subtasks']['tmp_name'];
+	    $notification = Notification::createFromTask($task);
 
-			    $subtaskImage = Image::make(Input::file("subtasks[$index][image]"));
-			    $stImageFileName = time() . '_' . $this->name . '_subtask.jpg';
-				$this->uploadRaw($subtaskImage, $stImageFileName, $this->household_id);
-			    $subtaskObj->image = $stImageFileName;
-		    }
-
-		    $members = Task::extractMembers($subtask);
-		    // if members is 0 automatically
-		    // assign it to all members on parent task
-		    if(count($members) === 0) {
-				$taskRepository->save($subtaskObj, $this->task_members);
-		    }else{
-			    $taskRepository->save($task, $members);
-		    }
-
-	    }
-
-
+	    // Fire event for Task | TODO Send SMS to task members who have mobile number
+	    event(new TaskHasCreated($task, $notification));
     }
 
 
-	private function getImageDir($householdId)
+
+	private function createSubtask($subtasks, $parentTask)
 	{
-		return Household::findOrFail($householdId)->getTaskImagesDir();
+		foreach( $subtasks as $subtaskArr )
+		{
+			if ( $subtaskArr['name'] )
+			{
+				$subtask = Task::createSubtask($parentTask, $subtaskArr);
+				// if members is 0 automatically assign it to all members on parent task
+				$members = Task::extractMembers($subtaskArr);
+				$members = count($members) === 0
+					? $parentTask->task_members
+					: $members;
+
+				// Persist Subtask
+				$this->repository->save($subtask, $members);
+
+				// Fire event for subtask
+				// event(new TaskHasCreated($task));
+			}
+		}
 	}
 
-	/**
-	 * Upload Task Image.
-	 *
-	 * @param $file
-	 * @param $name
-	 * @param $householdId
-	 * @return string
-	 */
-	private function uploadImage($file, $name, $householdId)
-	{
-		$fileName = FileHelper::generateFileName($name, $file);
-		$image = Image::make($file->getRealPath());
 
-		/* Prevent Image from possible upsizing and Maintain Aspect Ratio */
-		return $this->uploadRaw($image, $fileName, $householdId);
-	}
-
-	private function uploadRaw($image, $fileName, $householdId)
-	{
-		/* Create Dir if doesnt exists */
-		File::exists($this->getImageDir($householdId)) or File::makeDirectory($this->getImageDir($householdId), 493, true);
-
-		$image
-			->resize(null, 640, function ($constraint) {
-				$constraint->aspectRatio();
-				$constraint->upsize();
-			})
-			->save($this->getImageDir($householdId) . '/' . $fileName);
-
-		return $fileName;
-	}
 }

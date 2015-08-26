@@ -18,6 +18,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 {
     use Authenticatable, CanResetPassword, PresentableTrait, SoftDeletes;
 
+	/**
+	 * Path to Presenter
+	 *
+	 * @var string
+	 */
 	protected $presenter = 'App\Presenters\UserPresenter';
 
     /**
@@ -50,14 +55,38 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 */
 	protected $dates = ['deleted_at'];
 
+	public static $userBaseChannel = 'user-';
+
+
+	/**
+	 * Deactivate user.
+	 * Soft Deletes it.
+	 *
+	 * @param $userId
+	 * @return mixed
+	 */
 	public static function deactivateUser($userId)
 	{
 		return static::findOrFail($userId)->delete();
 	}
 
-	public static function registerHouseholdHead($firstname, $lastname, $middleinitial, $gender, $mobile_no, $email, $password)
+	/**
+	 * Register household head.
+	 * Inserts his user data.
+	 *
+	 * @param $firstname
+	 * @param $lastname
+	 * @param $middleinitial
+	 * @param $gender
+	 * @param $mobile_no
+	 * @param $email
+	 * @return static
+	 */
+	public static function registerHouseholdHead($firstname, $lastname, $middleinitial, $gender, $mobile_no, $email)
 	{
-		$user = new static(compact('firstname', 'lastname', 'middleinitial', 'gender', 'mobile_no', 'email', 'password'));
+		$user = new static(compact('firstname', 'lastname', 'middleinitial', 'gender', 'mobile_no', 'email'));
+
+		$user->password = RegistrationHelper::generateRandomPassword();
 
 		$user->role = Config::get('enums.roles.hh_head');
 
@@ -66,6 +95,17 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 		return $user;
 	}
 
+	/**
+	 * Add household member user data.
+	 *
+	 * @param $firstname
+	 * @param $lastname
+	 * @param $middleinitial
+	 * @param $gender
+	 * @param $mobile_no
+	 * @param $email
+	 * @return static
+	 */
 	public static function addHouseholdMember($firstname, $lastname, $middleinitial, $gender, $mobile_no, $email)
 	{
 		$member = new static(compact('firstname', 'lastname', 'middleinitial', 'gender', 'mobile_no', 'email'));
@@ -79,6 +119,18 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 		return $member;
 	}
 
+	/**
+	 * Update user data of household member.
+	 *
+	 * @param $id
+	 * @param $firstname
+	 * @param $lastname
+	 * @param $middleinitial
+	 * @param $gender
+	 * @param $mobile_no
+	 * @param $email
+	 * @return mixed
+	 */
 	public static function updateHouseholdMember($id, $firstname, $lastname, $middleinitial, $gender, $mobile_no, $email)
 	{
 		$user = static::findOrFail($id);
@@ -88,8 +140,16 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 		return $user;
 	}
 
-	public function activateAccount()
+	/**
+	 * Activate user account.
+	 *
+	 * @param null $password
+	 * @return $this
+	 */
+	public function activateAccount($password = null)
 	{
+		$this->password = $password;
+
 		$this->activation_code = null;
 
 		$this->activated_at = Carbon::now();
@@ -97,11 +157,25 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 		return $this;
 	}
 
+	/**
+	 * Determine if this user is household head or not.
+	 *
+	 * @return bool
+	 */
 	public function isHead()
 	{
 		return $this->role === Config::get('enums.roles.hh_head');
 	}
 
+	/**
+	 * Check User if exist
+	 * using his fullname.
+	 *
+	 * @param $firstname
+	 * @param $lastname
+	 * @param $middleinitial
+	 * @return mixed
+	 */
 	public static function isNameExist($firstname, $lastname, $middleinitial)
 	{
 		return static::where('firstname', $firstname)
@@ -110,11 +184,33 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 			->first();
 	}
 
+	/**
+	 * Get channel for this user.
+	 * Used for broadcasting events.
+	 *
+	 * @return string
+	 */
+	public function getChannel()
+	{
+		return self::$userBaseChannel.$this->id;
+	}
+
+	/*
+	 * Touch last_login timestamp
+	 * Used When Logging in
+	 */
+	public function touchOnline()
+	{
+		$this->last_login = Carbon::now();
+		$this->save();
+	}
+
 	/* Relationships */
 
 	public function tasks()
 	{
-		return $this->belongsToMany('App\Task', 'task_members');
+		return $this->belongsToMany('App\Task', 'task_members')
+			->orderBy('due_at', 'DESC');
 	}
 
 	public function household()
@@ -122,7 +218,34 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 		return $this->hasOne('App\Household', 'head_id', 'id');
 	}
 
+	// return form household_members table if not household head
+	public function memberHousehold()
+	{
+		return $this->belongsToMany('App\Household', 'household_members');
+	}
+
+	public function notifications()
+	{
+		return $this->hasMany('App\Notification', 'to_userid', 'id')
+			->with('sender')
+			->orderBy('seen')
+			->latest();
+	}
+
+	public function unseenNotifications()
+	{
+		return $this->notifications()
+			->where('seen', 0);
+	}
+
 	/* Mutators */
+
+	public function getHouseholdAttribute()
+	{
+		if($this->isHead()) return $this->household()->first();
+
+		return $this->memberHousehold()->first();
+	}
 
 	public function setFirstnameAttribute($value)
 	{

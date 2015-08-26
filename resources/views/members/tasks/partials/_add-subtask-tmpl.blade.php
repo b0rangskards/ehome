@@ -35,12 +35,12 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label for="streetnumber">Image (Optional)</label>
+                        <label for="streetnumber">Attach (Optional)</label>
                         <div class="fileinput fileinput-new" data-provides="fileinput">
                           <div>
                             <span class="btn btn-default btn-file">
-                                <span class="fileinput-new"><i class="fa fa-paperclip text-muted"></i></span>
-                                <span class="fileinput-exists"><i class="fa fa-refresh text-muted"></i></span>
+                                <span class="fileinput-new"><i class="md md-photo text-muted"></i></span>
+                                <span class="fileinput-exists"><i class="md md-photo text-muted"></i></span>
                                 <input type="file" name="subtasks[<%=index%>][image]">
                             </span>
                             <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">

@@ -26,7 +26,7 @@ class AddNewHouseholdMemberRequest extends Request
         return [
 	        'firstname' => 'required|max:100',
 	        'lastname' => 'required|max:100',
-	        'middleinitial' => 'required|max:1',
+	        'middleinitial' => 'max:1',
 	        'gender' => 'required|max:6',
 	        'mobile_no' => 'max:20',
 	        'email' => 'required|email|max:255|unique:users'

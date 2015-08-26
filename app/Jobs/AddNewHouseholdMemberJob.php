@@ -17,7 +17,7 @@ class AddNewHouseholdMemberJob extends Job implements SelfHandling
 	protected $firstname, $lastname, $middleinitial, $gender,
 		$mobile_no, $email;
 
-	protected $household_id;
+	protected $household;
 
 	/**
 	 * Create a new job instance.
@@ -28,10 +28,10 @@ class AddNewHouseholdMemberJob extends Job implements SelfHandling
 	 * @param $gender
 	 * @param $email
 	 * @param $mobile_no
-	 * @param $household_id
+	 * @param $household
 	 * @return \App\Jobs\AddNewHouseholdMemberJob
 	 */
-	function __construct($firstname, $lastname, $middleinitial, $gender, $email, $mobile_no, $household_id)
+	function __construct($firstname, $lastname, $middleinitial, $gender, $email, $mobile_no, $household)
 	{
 		$this->firstname = $firstname;
 		$this->lastname = $lastname;
@@ -39,9 +39,8 @@ class AddNewHouseholdMemberJob extends Job implements SelfHandling
 		$this->gender = $gender;
 		$this->email = $email;
 		$this->mobile_no = $mobile_no;
-		$this->household_id = $household_id;
+		$this->household = $household;
 	}
-
 
 	/**
 	 * Execute the job.
@@ -62,11 +61,9 @@ class AddNewHouseholdMemberJob extends Job implements SelfHandling
 
 	    $repository->save($person);
 
-	    $member = HouseholdMember::addMember($this->household_id, $person->id);
+	    $member = HouseholdMember::addMember($this->household->id, $person->id);
 
-	    $household = Household::findOrFail($this->household_id);
-
-	    $household->members()->save($member);
+	    $this->household->members()->save($member);
 
 	    event(new UserHasRegistered($person));
     }

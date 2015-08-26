@@ -39,7 +39,13 @@
 						{!! $household->present()->prettyAddress !!}
 					</span>
 				</dd>
-				<dd class="full-width"><div id="household-side-info-map" data-coordinates="{!! $household->coordinates !!}" class="border-white border-xl height-5"></div></dd>
+				@if($household->coordinates)
+				    <dd class="full-width">
+				        <div id="household-side-info-map" data-coordinates="{!! $household->coordinates !!}" class="border-white border-xl height-5"></div>
+				    </dd>
+				    @else
+				    <dd><div class="text-muted"><i>No Location Specified in map.</i></div></dd>
+			    @endif
 			</dl><!--end .dl-horizontal -->
 		</div><!--end .col -->
 	</div><!--end .row -->

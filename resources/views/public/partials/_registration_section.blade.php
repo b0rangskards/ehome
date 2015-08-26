@@ -87,18 +87,6 @@
                                 </div>
 
                                 <div class="col-xs-12">
-                                   <div class="form-group {!! $errors->has('password')?'has-error':'' !!}"
-                                   data-tooltip-validation
-                                   data-toggle="tooltip"
-                                   title="{!! $errors->first('password') !!}">
-                                        {!! Form::password('password', [
-                                            'class'       => 'form-control',
-                                            'placeholder' => 'New Password'
-                                        ]) !!}
-                                   </div>
-                                </div>
-
-                                <div class="col-xs-12">
                                     <div class="form-group">
                                         {!! Form::button('Sign Up Now', [
                                             'type'  => 'submit',

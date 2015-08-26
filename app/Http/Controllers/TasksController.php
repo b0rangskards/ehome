@@ -2,25 +2,33 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AddNoteRequest;
 use App\Http\Requests\CreateTaskRequest;
+use App\Jobs\AddTaskNoteJob;
 use App\Jobs\CreateTaskJob;
-use App\TaskType;
+use App\Jobs\UpdateTaskStatusJob;
+use App\Task;
+use Config;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Laracasts\Flash\Flash;
+use Log;
+use Redirect;
 use Response;
+use Validator;
 
 class TasksController extends Controller
 {
 
 	protected $redirectPath = '/task';
 
-
 	function __construct()
 	{
 		$this->middleware('auth');
+
+		$this->middleware('household.check');
 
 		// create a filter for head only
 		// only household heads allowed to create,update, and delete task
@@ -40,6 +48,10 @@ class TasksController extends Controller
 		    ['name' => 'task'],
 	    ];
 
+	    $data['tasks'] = $this->user->isHead()
+		                ? $this->user->household->tasks()->paginate(Task::$limit)
+		                : $this->user->tasks()->paginate(Task::$limit);
+
         return view('members.tasks.index', $data);
     }
 
@@ -55,7 +67,6 @@ class TasksController extends Controller
 		    ['name' => 'create task']
 	    ];
 
-	    $data['taskTypes'] = TaskType::lists('name', 'id');
 	    $data['taskMembers'] = $this->user->household->getHouseholdMembers($this->user->id);
 
 	    return view('members.tasks.create', $data);
@@ -79,53 +90,122 @@ class TasksController extends Controller
 
 	    $this->dispatchFrom(CreateTaskJob::class, $request);
 
-	    Flash::message('Successfully created task.');
+	    Flash::message('Task Created. Members notified!');
 
 	    return redirect($this->redirectPath);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function show($id)
+	/**
+	 * Display the specified resource.
+	 *
+	 * @param $task
+	 * @return Response
+	 */
+    public function show($task)
+    {
+	    $data['taskNotes'] = $task->notes;
+	    $data['task'] = $task;
+
+	    if($task->hasMember($this->user->id))
+	    {
+		    if( is_null($task->getMember($this->user->id)->pivot->accepted))
+		    {
+			    return view('members.tasks.confirm', $data);
+		    }
+		    else if( $task->getMember($this->user->id)->pivot->accepted === 0)
+		    {
+			    return Redirect::route('task.index');
+		    }
+	    }
+
+	    return view('members.tasks.show', $data);
+    }
+
+	/**
+	 * Show the form for editing the specified resource.
+	 *
+	 * @param $task
+	 * @return Response
+	 */
+    public function edit($task)
+    {
+	    $data['breadcrumbPages'] = [
+		    ['name' => 'task', 'link' => route('task.index')],
+		    ['name' => 'edit task']
+	    ];
+
+	    $data['task'] = $task;
+
+	    $data['taskMembers'] = $this->user->household->getHouseholdMembers($this->user->id);
+
+        return view('members.tasks.edit', $data);
+    }
+
+	/**
+	 * Update the specified resource in storage.
+	 *
+	 * @param CreateTaskRequest $request
+	 * @param $task
+	 * @return Response
+	 */
+    public function update(CreateTaskRequest $request, $task)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function edit($id)
+	/**
+	 * Remove the specified resource from storage.
+	 *
+	 * @param $task
+	 * @return Response
+	 */
+    public function destroy($task)
     {
-        //
+        $task->delete();
+
+		return Response::json(['message' => 'Task Deleted.', 'redirectTo' => route('task.index')], 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  Request  $request
-     * @param  int  $id
-     * @return Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+	public function confirm(Request $request, $task)
+	{
+		$this->validate($request, [
+			'user_id' => 'required|exists:users,id'
+		]);
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+		$accepted = $request->input('confirm')==='accept';
+
+		$task->members()->updateExistingPivot($request->input('user_id'), [
+			'accepted' => $accepted
+		]);
+
+		$redirectTo = $accepted ? route('task.show', $task->id) : route('task.index');
+		$message = $accepted ? 'Task Accepted.' : 'Task Declined.';
+
+		return Response::json(['message' => $message, 'redirectTo' => $redirectTo], 200);
+	}
+
+	public function updateStatus(Request $request, $task)
+	{
+		$status = $request->input('status');
+		$from_userid = $request->input('from_userid');
+		$statusArray = Config::get('enums.task_status');
+
+		if(!array_key_exists($status, $statusArray)) {
+			return Response::json(['message' => 'Task status is invalid'], 422);
+		}
+
+		$this->dispatch(new UpdateTaskStatusJob($from_userid, $status, $task));
+
+		return Response::json(['status' => $statusArray[$status]], 200);
+	}
+
+	public function addNote(AddNoteRequest $request, $task)
+	{
+		$request->merge(['task_id' => $task->id]);
+
+		$note = $this->dispatchFrom(AddTaskNoteJob::class, $request);
+
+		return Response::json(['note' => $note], 200);
+	}
+
 }

@@ -53,6 +53,9 @@
 .pd-lt-20 {
   padding-left: 20px;
 }
+.mg-rt-5 {
+  margin-right: 5px;
+}
 .weight600 {
   font-weight: 600;
 }
@@ -63,4 +66,49 @@
   color: #777;
   font-size: 12px;
   opacity: 0.6;
+}
+
+/* Tweak for Material Admin Member Side */
+
+.floating-label .form-control ~ label {
+  top: 5px;
+  font-size: 18px;
+}
+.floating-label .form-control:focus ~ label,
+.floating-label .form-control.dirty ~ label {
+  top: -25px;
+  font-size: 12px !important;
+}
+
+/* End of Tweak for Material Admin Member Side */
+.text-normal {
+  text-transform: none;
+}
+.link {
+  cursor: pointer;
+}
+
+
+/* Flat Colors */
+.bg-flat-green {
+  background-color: #2ecc71;
+}
+.flat-green {
+  color: #2ecc71;
+}
+.flat-orange {
+  color: #f39c12;
+}
+.flat-turq {
+  color: #1abc9c
+}
+.flat-red {
+  color: #ea6153;
+}
+
+.elipses-overflow-notification{
+  width: 270px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

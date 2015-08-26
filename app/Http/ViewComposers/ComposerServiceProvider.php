@@ -27,6 +27,7 @@ class ComposerServiceProvider extends ServiceProvider {
 		], function($view) {
 			$view->with('householdMembers', Auth::user()->household->members()->with('user')->get());
 		});
+
 	}
 
 	/**

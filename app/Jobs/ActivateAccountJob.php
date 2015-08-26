@@ -13,17 +13,21 @@ class ActivateAccountJob extends Job implements SelfHandling
 	/**
 	 * @var User
 	 */
-	private $user;
+	protected $user;
+
+	protected $password;
 
 	/**
 	 * Create a new job instance.
 	 *
 	 * @param User $user
+	 * @param $password
 	 * @return \App\Jobs\ActivateAccountJob
 	 */
-    public function __construct(User $user)
+    public function __construct(User $user, $password)
     {
 	    $this->user = $user;
+	    $this->password = $password;
     }
 
 	/**
@@ -34,7 +38,7 @@ class ActivateAccountJob extends Job implements SelfHandling
 	 */
     public function handle(UserRepository $repository)
     {
-        $user = $this->user->activateAccount();
+        $user = $this->user->activateAccount($this->password);
 
         $repository->save($user);
     }

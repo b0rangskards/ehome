@@ -3,6 +3,13 @@
  * CONSTANTS
  */
 
+var PUSHER = {
+    APP_KEY: '733ba73955b91f5801f7',
+    OPTIONS: {
+        encrypted: true
+    }
+};
+
 /* MAP CONSTANTS */
 var GMAP = {
     coords: {

@@ -1,7 +1,7 @@
 <?php
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.1.10 (LTS) on 2015-08-16.
+ * Generated for Laravel 5.1.10 (LTS) on 2015-08-25.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  * @see https://github.com/barryvdh/laravel-ide-helper
@@ -12626,6 +12626,91 @@ namespace {
 
 
     class Carbon extends \Carbon\Carbon{
+        
+    }
+
+
+    class Image extends \Intervention\Image\Facades\Image{
+        
+        /**
+         * Overrides configuration settings
+         *
+         * @param array $config
+         * @static 
+         */
+        public static function configure($config = array()){
+            return \Intervention\Image\ImageManager::configure($config);
+        }
+        
+        /**
+         * Initiates an Image instance from different input types
+         *
+         * @param mixed $data
+         * @return \Intervention\Image\Image 
+         * @static 
+         */
+        public static function make($data){
+            return \Intervention\Image\ImageManager::make($data);
+        }
+        
+        /**
+         * Creates an empty image canvas
+         *
+         * @param integer $width
+         * @param integer $height
+         * @param mixed $background
+         * @return \Intervention\Image\Image 
+         * @static 
+         */
+        public static function canvas($width, $height, $background = null){
+            return \Intervention\Image\ImageManager::canvas($width, $height, $background);
+        }
+        
+        /**
+         * Create new cached image and run callback
+         * (requires additional package intervention/imagecache)
+         *
+         * @param \Closure $callback
+         * @param integer $lifetime
+         * @param boolean $returnObj
+         * @return \Intervention\Image\Image 
+         * @static 
+         */
+        public static function cache($callback, $lifetime = null, $returnObj = false){
+            return \Intervention\Image\ImageManager::cache($callback, $lifetime, $returnObj);
+        }
+        
+    }
+
+
+    class FileHelper extends \App\Helpers\FileHelper{
+        
+    }
+
+
+    class JavaScript extends \Laracasts\Utilities\JavaScript\JavaScriptFacade{
+        
+        /**
+         * Bind the given array of variables to the view.
+         *
+         * @param array $variables
+         * @static 
+         */
+        public static function put($variables){
+            return \Laracasts\Utilities\JavaScript\PHPToJavaScriptTransformer::put($variables);
+        }
+        
+        /**
+         * Translate the array of PHP vars to
+         * the expected JavaScript syntax.
+         *
+         * @param array $vars
+         * @return array 
+         * @static 
+         */
+        public static function buildJavaScriptSyntax($vars){
+            return \Laracasts\Utilities\JavaScript\PHPToJavaScriptTransformer::buildJavaScriptSyntax($vars);
+        }
         
     }
 

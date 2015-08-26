@@ -10,6 +10,9 @@ class MemberPagesController extends Controller{
 		$this->middleware('auth');
 	}
 
+	/**
+	 * @return \Illuminate\View\View
+	 */
 	public function index()
 	{
 		return view('members.index');

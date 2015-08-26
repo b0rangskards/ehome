@@ -3,6 +3,13 @@
  * CONSTANTS
  */
 
+var PUSHER = {
+    APP_KEY: '733ba73955b91f5801f7',
+    OPTIONS: {
+        encrypted: true
+    }
+};
+
 /* MAP CONSTANTS */
 var GMAP = {
     coords: {
@@ -26,11 +33,8 @@ function updateMapCenter(map, newLatLng) {
 }
 $(function () {
 
-
-
-
         /* Household Page */
-        $('#setup-household-map, #create-task-map').gmap3({
+        $('#setup-household-map').gmap3({
             map: {
                 options: {
                     center: [GMAP.coords.lat, GMAP.coords.lng],
@@ -56,6 +60,51 @@ $(function () {
             }
         });
 
+
+
+    $('#include-location-modal')
+        .on('show.bs.modal', function(){
+            $('#create-task-map').gmap3({
+                map: {
+                    options: {
+                        center: [GMAP.coords.lat, GMAP.coords.lng],
+                        zoom: GMAP.zoom,
+                        disableDefaultUI: true
+                    }
+                }
+            });
+        }).on('shown.bs.modal', function(e){
+            var triggerBtn = $(e.relatedTarget);
+
+           $('#create-task-map').gmap3({
+               trigger: 'resize',
+               map: {
+                   options: {
+                       center: [GMAP.coords.lat, GMAP.coords.lng]
+                   }
+               },
+               marker: {
+                   latLng: [GMAP.coords.lat, GMAP.coords.lng],
+                   options: {
+                       draggable: true,
+                       icon: GMAP.defaultMarker
+                   },
+                   events: {
+                       dragend: function (marker, event, context) {
+                           var newLatLng = $.map(marker.position, function (el) {
+                               return el;
+                           });
+                           updateMapCenter(this, newLatLng);
+                           var latLng = newLatLng[0] + ',' + newLatLng[1];
+                           triggerBtn.parent().parent().find('input[name=coordinates]').val(latLng);
+                       }
+                   }
+               }
+           });
+        }).on('hidden.bs.modal', function(){
+            $('#create-task-map').gmap3('destroy');
+        });
+
         $('a[href="#tab-additional-details"]').on('shown.bs.tab', function (e) {
             $('#create-task-map').gmap3({
                 trigger: 'resize',
@@ -68,7 +117,7 @@ $(function () {
 
         });
 
-        $('#household-side-info-map').gmap3({
+        $('#household-side-info-map,.map-with-coords').gmap3({
             map: {
                 options: {
                     center: [GMAP.coords.lat, GMAP.coords.lng],
@@ -102,7 +151,9 @@ $(function () {
                     disableDefaultUI: true
                 },
                 callback: function () {
-                    var latLngArray = ($(this).data('coordinates')).split(',');
+                    var coordinates = $(this).data('coordinates');
+                    var latLngArray = coordinates ? coordinates.split(',') : [GMAP.coords.lat, GMAP.coords.lng];
+
                     $(this).gmap3({
                         map: {
                             options: {
@@ -149,8 +200,14 @@ $(function () {
         function processFormAjaxRequest(form) {
             var method = form.find('input[name="_method"]').val() || 'POST';
             var url = form.prop('action');
-            console.log(method);
             return processAjaxRequest(method, url, form.serialize());
+        }
+
+        function processFormAjaxRequestWithData(form, additionalData) {
+            var method = form.find('input[name="_method"]').val() || 'POST';
+            var url = form.prop('action');
+            var formData = form.serialize() + additionalData
+            return processAjaxRequest(method, url, formData);
         }
 
         /* End Ajax Functions */
@@ -330,6 +387,128 @@ $(function () {
         $('input.material-datetime').bootstrapMaterialDatePicker({format: 'YYYY-MM-DD HH:mm', minDate: new Date()});
 
         $('.select2-multi').select2();
+
+        /* Marking seen on Notifications */
+        $('.notification:not(.seen)').on('click', function(e){
+            var thisElement = $(this);
+            var link = thisElement.prop('href');
+            var recipientId = thisElement.data('recipient');
+
+           processAjaxRequest('PATCH', '/notification/markseen', {link: link, to_userid: recipientId})
+               .done(function(){
+                   thisElement.addClass('seen');
+               });
+        });
+        $('ul.notifications-list .notification:not(.seen)').on('click', function(){
+            var thisElement = $(this);
+            var link = thisElement.find('a').prop('href');
+            var recipientId = thisElement.data('recipient');
+
+            processAjaxRequest('PATCH', '/notification/markseen', {link: link, to_userid: recipientId})
+                .done(function () {
+                    thisElement.addClass('seen');
+                });
+        });
+        /* End Marking seen on Notifications */
+
+        $('#form-task-confirm button[data-task-confirm]').on('click', function(){
+           var confirm = $(this).data('task-confirm');
+            var form = $('#form-task-confirm');
+            var method = form.find('input[name="_method"]').val() || 'POST';
+            var url = form.prop('action');
+
+            var formData = form.serialize() + '&confirm=' + confirm;
+
+            processAjaxRequest(method, url, formData)
+                .done(function(data){
+
+                    showInfoMessage(data.message, '');
+
+                    setTimeout(function () {
+                        if (data.redirectTo != undefined) {
+                            window.location = data.redirectTo;
+                        } else {
+                            location.reload();
+                        }
+                    }, 1500);
+                });
+        });
+
+        $('#view-task-image-modal').on('show.bs.modal', function(e)
+        {
+            var img = $(e.relatedTarget).find('img').prop('src');
+            $(this).find('.modal-body img').prop('src', img);
+        })
+            .on('hidden.bs.modal', function()
+            {
+                $(this).find('.modal-body img').prop('src', '');
+            });
+
+
+        $('.btn-update-task-status').on('click', function(){
+            var thisElement = $(this),
+                status = thisElement.data('status'),
+                from_userid = thisElement.data('userid'),
+                form = thisElement.closest('form'),
+                loader = form.find('.loader');
+
+            var additionalParams = '&status=' + status + '&from_userid=' + from_userid;
+
+            loader.show();
+
+            processFormAjaxRequestWithData(form, additionalParams)
+                .done(function(data) {
+                    form.parent().find('.current-status-content').text(data.status);
+
+                    $(".tooltip").hide();
+
+                    if (status === 'done') {
+                        thisElement.parent().remove();
+                        return;
+                    }
+
+                    thisElement.remove();
+                })
+                .always(function(){
+                   loader.hide();
+                });
+        });
+
+        $('.form-task-leave-note').on('submit', function(e){
+            e.preventDefault();
+            var form = $(this);
+            var deferred = processFormAjaxRequest(form);
+            var loader = form.find('.loader');
+
+            loader.show();
+            form.find('.help-block').text('');
+            form.find('.form-group').removeClass('has-error');
+
+            deferred
+                .done(function(data){
+                    var template = $('#noteTpl').html();
+                    var html = Mustache.to_html(template, data.note);
+                    $('#list-tasknote').prepend(html);
+
+                    $('#no-notes-item').remove();
+
+                    if($('#list-tasknote li').length >= 6) {
+                        $('#list-tasknote li:last').remove();
+                    }
+
+                    resetForm(form);
+                })
+                .fail(function(data){
+                    var error = data.responseJSON.note[0];
+                    form.find('.help-block').text(error);
+                    form.find('.form-group').addClass('has-error');
+                })
+                .always(function(){
+                    loader.hide();
+                });
+        });
+
+
     });
 
 $(function(){
@@ -341,6 +520,8 @@ $(function(){
     $('input.mobile_no').inputmask("mask", {"mask": "(+63) 999-9999999"});
 
     /* Registration Page End */
+
+
 
 });
 

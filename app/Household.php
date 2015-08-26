@@ -34,6 +34,10 @@ class Household extends Model
 		return new static(compact('head_id', 'address', 'coordinates'));
 	}
 
+	public function getImagesBaseUrl()
+	{
+		return asset(static::$dir.'/'.$this->id.'/');
+	}
 
 	public function getDir()
 	{
@@ -69,12 +73,19 @@ class Household extends Model
 
 	public function members()
 	{
-		return $this->hasMany('App\HouseholdMember', 'household_id', 'id');
+		return $this->hasMany('App\HouseholdMember', 'household_id', 'id')
+			->with('user');
 	}
 
 	public function head()
 	{
 		return $this->belongsTo('App\User', 'head_id', 'id');
+	}
+
+	public function tasks()
+	{
+		return $this->hasMany('App\Task', 'household_id')
+			->orderBy('due_at', 'DESC');
 	}
 
 	/* Mutators & Accessors */

@@ -30,5 +30,6 @@ class Kernel extends HttpKernel
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
 	    'household.check' => \App\Http\Middleware\CheckHouseholdSetup::class,
+	    'is.householdhead' => \App\Http\Middleware\RedirectIfNotHouseholdHead::class,
     ];
 }

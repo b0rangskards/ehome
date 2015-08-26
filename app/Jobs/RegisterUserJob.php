@@ -14,7 +14,7 @@ class RegisterUserJob extends Job implements SelfHandling
 {
 
 	protected $firstname, $lastname, $middleinitial, $gender,
-			  $mobile_no, $email, $password;
+			  $mobile_no, $email;
 
 	/**
 	 * Create a new job instance.
@@ -25,9 +25,8 @@ class RegisterUserJob extends Job implements SelfHandling
 	 * @param $gender
 	 * @param $mobile_no
 	 * @param $email
-	 * @param $password
 	 */
-	function __construct($firstname, $lastname, $middleinitial, $gender, $mobile_no, $email, $password)
+	function __construct($firstname, $lastname, $middleinitial, $gender, $mobile_no, $email)
 	{
 		$this->firstname = $firstname;
 		$this->lastname = $lastname;
@@ -35,7 +34,6 @@ class RegisterUserJob extends Job implements SelfHandling
 		$this->gender = $gender;
 		$this->mobile_no = $mobile_no;
 		$this->email = $email;
-		$this->password = $password;
 	}
 
 
@@ -53,8 +51,7 @@ class RegisterUserJob extends Job implements SelfHandling
 		    $this->middleinitial,
 		    $this->gender,
 		    $this->mobile_no,
-		    $this->email,
-		    $this->password
+		    $this->email
 	    );
 
 		$repository->save($user);

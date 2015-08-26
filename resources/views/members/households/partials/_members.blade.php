@@ -65,7 +65,7 @@
 	    </div><!--end .hbox-xs -->
 
 	    @empty
-	        <p class="text-center">Currently No Household Member.</p>
+	        <p class="text-center" style="margin-top: 30px">Currently No Household Member.</p>
         @endforelse
 
     </div>

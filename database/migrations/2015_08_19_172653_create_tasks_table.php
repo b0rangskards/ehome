@@ -16,7 +16,6 @@ class CreateTasksTable extends Migration
 	        $table->increments('id');
 	        $table->integer('household_id')->unsigned();
 	        $table->integer('parent_id')->unsigned()->nullable();
-	        $table->integer('type_id')->unsigned();
 	        $table->string('name');
 	        $table->string('slug');
 	        $table->text('description')->nullable();
@@ -25,12 +24,11 @@ class CreateTasksTable extends Migration
 	        $table->tinyInteger('priority')->default(1); // task priority default to important
 	        $table->string('image')->nullable();
 	        $table->string('status', 15)->default('pending');
-	        $table->tinyInteger('progress')->default(0);
 	        $table->softDeletes();
 	        $table->timestamps();
 
+	        $table->foreign('parent_id')->references('id')->on('tasks')->onDelete('cascade')->onUpdate('cascade');
 	        $table->foreign('household_id')->references('id')->on('households')->onDelete('cascade')->onUpdate('cascade');
-	        $table->foreign('type_id')->references('id')->on('task_types')->onDelete('cascade')->onUpdate('cascade');
         });
 
 	    DB::statement('ALTER TABLE tasks ADD coordinates POINT NULL');

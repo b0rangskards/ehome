@@ -11,7 +11,7 @@
     <div class="card-body floating-label">
 
         {{-- Gender --}}
-        <div class="row center-block">
+        <div class="row center-block" style="margin-bottom: 20px;">
             <div class="col-md-4">
                 <div class="form-group {!! $errors->has('gender')?'has-error':'' !!}" style="margin-top:20px;">
                     <div>
@@ -27,7 +27,7 @@
             </div>
         </div>
 
-        <div class="row center-block">
+        <div class="row center-block" style="margin-bottom: 10px">
             {{-- Firstname --}}
             <div class="col-md-5">
                 <div class="form-group {!! $errors->has('firstname')?'has-error':'' !!}">
@@ -48,7 +48,7 @@
             <div class="col-md-2">
                 <div class="form-group {!! $errors->has('middleinitial')?'has-error':'' !!}">
                     {!! Form::text('middleinitial', null, ['class' => 'form-control', 'maxlength' => 1]) !!}
-                    {!! Form::label('middleinitial', 'MI') !!}
+                    {!! Form::label('middleinitial', 'MI (Optional)') !!}
                     <p class="help-block">{!! $errors->first('middleinitial') !!}</p>
                 </div>
             </div>

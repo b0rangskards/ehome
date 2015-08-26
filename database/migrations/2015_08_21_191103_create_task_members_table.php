@@ -19,7 +19,7 @@ class CreateTaskMembersTable extends Migration
 	        $table->integer('task_id')->unsigned()->index();
 	        $table->foreign('task_id')->references('id')->on('tasks')->onDelete('cascade');
 
-	        $table->boolean('accepted')->default(0);
+	        $table->boolean('accepted')->nullable();
         });
     }
 

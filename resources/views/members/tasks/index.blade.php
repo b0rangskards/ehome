@@ -1,35 +1,28 @@
-@extends('members.partials._task-master')
-@section('card-content')
+@extends('layouts.master-member')
+@section('content')
+<div class="row">
+    {{-- Flash Messages --}}
+    @include('flash::message')
+    {{-- Task Navigation --}}
+    @include('members.partials._task-nav')
 
-<!-- BEGIN CARD HEADER -->
-<div class="card-head style-primary">
-    {{-- Search Field --}}
-    {{--<div class="tools pull-left">--}}
-        {{--<form class="navbar-search" role="search">--}}
-            {{--<div class="form-group">--}}
-                {{--<input type="text" class="form-control" name="contactSearch" placeholder="Enter your keyword">--}}
-            {{--</div>--}}
-            {{--<button type="submit" class="btn btn-icon-toggle ink-reaction"><i class="fa fa-search"></i></button>--}}
-        {{--</form>--}}
-    {{--</div>--}}
-    {{-- Additional Tools for Specific Tasks --}}
-    {{--<div class="tools">--}}
-        {{--<a class="btn btn-floating-action btn-default-light" href="{{ route('task.create') }}" data-toggle="tooltip" data-placement="left" title="New Task">--}}
-            {{--<i class="fa fa-plus"></i>--}}
-        {{--</a>--}}
-    {{--</div>--}}
-</div>
-<!-- END CARD HEADER -->
+<div class="row">
+    <div class="col-sm-7 col-md-offset-1">
+        <h4>You have {{count($tasks)}} {{str_plural('Task', count($tasks))}}</h4>
+        <ul class="list-comments">
+            @forelse($tasks as $task)
+                @include('members.tasks.partials._task-list-item')
+            @empty
+                <p class="text-center text-default-light">You have no tasks yet.</p>
+            @endforelse
+        </ul>
 
-<!-- BEGIN CARD BODY -->
-<div class="card-body">
-    <div class="row">
-
-        <div class="col-md-9">
+        <div class="text-center">
+        {!! $tasks->render() !!}
         </div>
-
     </div>
 </div>
-<!-- END CARD BODY -->
 
+
+</div>
 @stop

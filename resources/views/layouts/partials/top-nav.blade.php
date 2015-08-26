@@ -23,41 +23,26 @@
 				<!-- Collect the nav links, forms, and other content for toggling -->
 				<div class="headerbar-right">
 					<ul class="header-nav header-nav-options">
-
-						<li>
-							<!-- Search form -->
-							<form class="navbar-search" role="search">
-								<div class="form-group">
-									<input type="text" class="form-control" name="headerSearch" placeholder="Enter your keyword">
-								</div>
-								<button type="submit" class="btn btn-icon-toggle ink-reaction"><i class="fa fa-search"></i></button>
-							</form>
-						</li>
-
 						{{-- Notifications --}}
-						<li class="dropdown hidden-xs">
+						<li class="dropdown">
 							<a href="javascript:void(0);" class="btn btn-icon-toggle btn-default" data-toggle="dropdown">
-								<i class="fa fa-bell"></i><sup class="badge style-danger">4</sup>
+								<i class="fa fa-bell"></i>
+								@if(count($currentUser->unseenNotifications) > 0)
+								    <sup class="badge style-danger" id="notifications-ctr">{{count($currentUser->unseenNotifications)}}</sup>
+								@endif
 							</a>
-							<ul class="dropdown-menu animation-expand">
-								<li class="dropdown-header">Today's messages</li>
-								<li>
-									<a class="alert alert-callout alert-warning" href="javascript:void(0);">
-										<img class="pull-right img-circle dropdown-avatar" src="" alt="" />
-										<strong>Alex Anistor</strong><br/>
-										<small>Testing functionality...</small>
-									</a>
+							<ul class="dropdown-menu animation-expand notifications-ul">
+								<li class="dropdown-header">Notifications</li>
+								<li id="notifications-list">
+								    @forelse($currentUser->notifications->take(7) as $notification)
+                                        @include('members.partials._notification-item')
+									@empty
+									    <p class="text-center text-muted">You have no notifications.</p>
+									@endforelse
 								</li>
-								<li>
-									<a class="alert alert-callout alert-info" href="javascript:void(0);">
-										<img class="pull-right img-circle dropdown-avatar" src="" alt="" />
-										<strong>Alicia Adell</strong><br/>
-										<small>Reviewing last changes...</small>
-									</a>
-								</li>
-								<li class="dropdown-header">Options</li>
-								<li><a href="#">View all messages <span class="pull-right"><i class="fa fa-arrow-right"></i></span></a></li>
-								<li><a href="#">Mark as read <span class="pull-right"><i class="fa fa-arrow-right"></i></span></a></li>
+								@if(count($currentUser->notifications) > 0)
+								    <li><a href="{{route('notification.index')}}">View all Notifications<span class="pull-right"><i class="fa fa-arrow-right"></i></span></a></li>
+							    @endif
 							</ul>
 						</li>
 

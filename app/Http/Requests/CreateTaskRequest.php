@@ -26,10 +26,9 @@ class CreateTaskRequest extends Request
     {
         return [
           'name'           => 'required|min:3',
-	      'type'           => 'required|exists:task_types,id',
 //	      'due_date'       => 'date_format:"F, d Y g:i a"|required_without:recurring_date',
-	      'due_date'       => 'date|required_without:recurring_date',
-	      'recurring_date' => 'empty_when:due_date',
+	      'due_at'         => 'date|required_without:recurring_date',
+	      'recurring_at'   => 'empty_when:due_at',
 	      'priority'       => 'required|integer',
           'image'          => 'image',
 	      'task_members'   => 'members_exists',

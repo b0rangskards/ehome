@@ -22,6 +22,8 @@ class HouseholdsController extends Controller
 	{
 		$this->middleware('auth');
 
+		$this->middleware('is.householdhead', ['except' => ['index']]);
+
 		$this->middleware('household.check', ['except' => ['create', 'store']]);
 
 		parent::__construct();
@@ -51,6 +53,8 @@ class HouseholdsController extends Controller
      */
     public function create()
     {
+		$this->hasSetupHousehold();
+
 	    $breadcrumbPages = [
 		    ['name' => 'household'],
 		    ['name' => 'setup']
@@ -67,6 +71,8 @@ class HouseholdsController extends Controller
 	 */
     public function store(SetupHouseholdRequest $request)
     {
+	    $this->hasSetupHousehold();
+
 	    if( $request->ajax() && !$request->has('head_id') && is_null($request->input('head_id')) ) {
 	        return Response::json(['message' => 'You must be registered to continue.'], 422);
 	    }
@@ -83,35 +89,35 @@ class HouseholdsController extends Controller
 		return redirect($this->redirectPath);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function show($id)
+	/**
+	 * Display the specified resource.
+	 *
+	 * @param $household
+	 * @return Response
+	 */
+    public function show($household)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return Response
-     */
+	/**
+	 * Show the form for editing the specified resource.
+	 *
+	 * @param $household
+	 * @return Response
+	 */
     public function edit($household)
     {
         return view('members.households.edit', compact('household'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  Request  $request
-     * @param  int  $id
-     * @return Response
-     */
+	/**
+	 * Update the specified resource in storage.
+	 *
+	 * @param SetupHouseholdRequest $request
+	 * @param $household
+	 * @return Response
+	 */
     public function update(SetupHouseholdRequest $request, $household)
     {
 	    if ( $request->ajax() &&
@@ -125,7 +131,7 @@ class HouseholdsController extends Controller
 
 	    $this->dispatchFrom(UpdateHouseholdJob::class, $request);
 
-	    Flash::message('Successfully updated household.');
+//	    Flash::message('Successfully updated household.');
 
 	    return redirect($this->redirectPath);
     }
@@ -140,4 +146,14 @@ class HouseholdsController extends Controller
     {
         //
     }
+
+	private function hasSetupHousehold()
+	{
+		if ( !is_null($this->user->household) ) {
+			return redirect(route('household.index'));
+		}
+	}
+
 }
+
+

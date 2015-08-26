@@ -2,7 +2,9 @@ var elixir = require('laravel-elixir');
 var dir = {
     'bower': '../bower/',
     'coreJs': 'core/',
-    'memberJs': 'member/'
+    'memberJs': 'member/',
+    'packageJs': 'package/',
+    'packageCss': 'package/'
 };
 /*
  |--------------------------------------------------------------------------
@@ -27,8 +29,9 @@ elixir(function(mix) {
        dir.bower  + 'nanoscroller/bin/css/nanoscroller.css',
        dir.bower  + 'sweetalert/dist/sweetalert.css',
        dir.bower  + 'bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css',
-       'select2.css',
-       'jasny-bootstrap.css',
+       dir.packageCss + 'select2.css',
+       dir.packageCss + 'jasny-bootstrap.css',
+       dir.packageCss + 'toastr.css',
        'materialadmin.css',
        'material-design-iconic-font.css'
     ], 'public/css/vendor.css');
@@ -40,14 +43,18 @@ elixir(function(mix) {
         dir.bower  + 'bootstrap/dist/js/bootstrap.js',
         dir.bower  + 'nanoscroller/bin/javascripts/jquery.nanoscroller.js',
         dir.bower  + 'jquery-autosize/dist/autosize.js',
-        dir.bower  + 'toastr/toastr.js',
         dir.bower  + 'jquery.inputmask/dist/inputmask/jquery.inputmask.js',
-        dir.bower  + 'sweetalert/dist/sweetalert.min.js',
+        dir.bower  + 'sweetalert/dist/sweetalert-dev.js',
+        dir.packageJs  + 'toastr.js',
         dir.bower  + 'momentjs/min/moment-with-locales.js',
         dir.bower  + 'bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js',
-        'select2.js',
-        'jasny-bootstrap.js',
-        'microtemplating.js',
+        dir.bower  + 'pusher/dist/pusher.js',
+        dir.packageJs + 'select2.js',
+        dir.packageJs + 'jasny-bootstrap.js',
+        dir.packageJs + 'microtemplating.js',
+        dir.bower  + 'mustache.js/mustache.js',
+        'constants.js',
+        dir.coreJs + 'toastr.settings.js',
         dir.coreJs + 'App.js',
         dir.coreJs + 'AppNavigation.js',
         dir.coreJs + 'AppOffcanvas.js',
@@ -55,6 +62,7 @@ elixir(function(mix) {
         dir.coreJs + 'AppForm.js',
         dir.coreJs + 'AppNavSearch.js',
         dir.coreJs + 'AppVendor.js',
+        dir.coreJs + 'notifier.js'
     ], 'public/js/vendor.js');
 
     mix.scripts([
