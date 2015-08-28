@@ -5,8 +5,10 @@ namespace App\Providers;
 use App\Events\SampleEvent;
 use App\Events\TaskHasCreated;
 use App\Events\TaskStatusUpdated;
+use App\Events\UserHasActivated;
 use App\Events\UserHasRegistered;
 use App\Handlers\Events\GenerateTaskUpdatedNotification;
+use App\Handlers\Events\InitializeFreeTrial;
 use App\Handlers\Events\NotifyTaskMembers;
 use App\Handlers\Events\SendConfirmationEmail;
 use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
@@ -27,6 +29,10 @@ class EventServiceProvider extends ServiceProvider
 
 	    UserHasRegistered::class => [
 		  SendConfirmationEmail::class,
+	    ],
+
+	    UserHasActivated::class => [
+		    InitializeFreeTrial::class,
 	    ],
 
 	    TaskHasCreated::class => [

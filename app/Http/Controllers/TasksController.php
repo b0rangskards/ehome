@@ -3,21 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AddNoteRequest;
-use App\Http\Requests\CreateTaskRequest;
+use App\Http\Requests\TaskRequest;
 use App\Jobs\AddTaskNoteJob;
 use App\Jobs\CreateTaskJob;
+use App\Jobs\UpdateTaskJob;
 use App\Jobs\UpdateTaskStatusJob;
 use App\Task;
 use Config;
 use Illuminate\Http\Request;
-
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Laracasts\Flash\Flash;
-use Log;
 use Redirect;
 use Response;
-use Validator;
 
 class TasksController extends Controller
 {
@@ -67,7 +65,7 @@ class TasksController extends Controller
 		    ['name' => 'create task']
 	    ];
 
-	    $data['taskMembers'] = $this->user->household->getHouseholdMembers($this->user->id);
+	    $data['membersList'] = $this->user->household->member_list;
 
 	    return view('members.tasks.create', $data);
     }
@@ -75,10 +73,10 @@ class TasksController extends Controller
 	/**
 	 * Store a newly created resource in storage.
 	 *
-	 * @param CreateTaskRequest $request
+	 * @param TaskRequest $request
 	 * @return Response
 	 */
-    public function store(CreateTaskRequest $request)
+    public function store(TaskRequest $request)
     {
 	    if ( $request->ajax() && !$request->has('household_id') && is_null($request->input('household_id')) ) {
 		    return Response::json(['message' => 'You must have a household to create task.'], 422);
@@ -90,7 +88,7 @@ class TasksController extends Controller
 
 	    $this->dispatchFrom(CreateTaskJob::class, $request);
 
-	    Flash::message('Task Created. Members notified!');
+	    Flash::message('Task Created.');
 
 	    return redirect($this->redirectPath);
     }
@@ -135,8 +133,7 @@ class TasksController extends Controller
 	    ];
 
 	    $data['task'] = $task;
-
-	    $data['taskMembers'] = $this->user->household->getHouseholdMembers($this->user->id);
+	    $data['membersList'] = $this->user->household->member_list;
 
         return view('members.tasks.edit', $data);
     }
@@ -144,13 +141,19 @@ class TasksController extends Controller
 	/**
 	 * Update the specified resource in storage.
 	 *
-	 * @param CreateTaskRequest $request
+	 * @param TaskRequest $request
 	 * @param $task
 	 * @return Response
 	 */
-    public function update(CreateTaskRequest $request, $task)
+    public function update(TaskRequest $request, $task)
     {
-        //
+	    $request->merge(['id' => $task->id]);
+
+	    $this->dispatchFrom(UpdateTaskJob::class, $request);
+
+	    Flash::message('Task Updated.');
+
+	    return Redirect::route('task.index');
     }
 
 	/**
@@ -161,7 +164,8 @@ class TasksController extends Controller
 	 */
     public function destroy($task)
     {
-        $task->delete();
+        $task->deleteOldImage();
+	    $task->delete();
 
 		return Response::json(['message' => 'Task Deleted.', 'redirectTo' => route('task.index')], 200);
     }

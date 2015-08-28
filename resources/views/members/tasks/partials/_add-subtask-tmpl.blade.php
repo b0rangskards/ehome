@@ -11,11 +11,7 @@
                 </div>
                 <div class="col-sm-4">
                     <div class="form-group">
-                        <select class="form-control select2-list select2-multi" name="subtasks[<%=index%>][]" multiple>
-                            @foreach($taskMembers as $member)
-                                <option value="{{ $member->user->id }}">{{ $member->user->firstname }}</option>
-                            @endforeach
-                        </select>
+                        {!! Form::select('task_members[]', $membersList, null, ['class' => 'form-control select2-multi', 'multiple']) !!}
                         <label>Assign To</label>
                     </div>
                 </div>

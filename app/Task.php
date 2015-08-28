@@ -5,6 +5,7 @@ namespace App;
 use App\Helpers\FileHelper;
 use Carbon;
 use DB;
+use File;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laracasts\Presenter\PresentableTrait;
@@ -37,6 +38,16 @@ class Task extends Model
 	protected $dates = ['deleted_at'];
 
 	public static $limit = 5;
+
+	public static function getAllActiveTasks()
+	{
+		return static::active()->get();
+	}
+
+	public static function updateTask($id, $name, $due_at, $recurring_at, $priority, $description, $coordinates)
+	{
+		return static::findOrFail($id)->fill(compact('name', 'due_at', 'recurring_at', 'priority', 'description', 'coordinates'));
+	}
 
 	public static function createTask($household_id, $name, $due_at, $recurring_at, $priority, $parent_id = null, $description = null, $coordinates = null)
 	{
@@ -74,6 +85,20 @@ class Task extends Model
 	{
 		$this->status = $status;
 		return $this->save();
+	}
+
+	public function deleteOldImage()
+	{
+		if($this->hasImage() && File::exists($this->directory)) {
+			File::delete($this->directory);
+			return true;
+		}
+		return false;
+	}
+
+	public function timeLeft()
+	{
+		return Carbon::now();
 	}
 
 	/**
@@ -164,6 +189,16 @@ class Task extends Model
 		return !$this->subtasks->isEmpty();
 	}
 
+	public function hasImage()
+	{
+		return $this->image;
+	}
+
+	public function hasLocation()
+	{
+		return $this->coordinates;
+	}
+
 	public function hasExpired()
 	{
 		return Carbon::parse($this->due_at) <= Carbon::now();
@@ -218,7 +253,31 @@ class Task extends Model
 			->latest();
 	}
 
+	/* Scope Query */
+
+	public function scopeActive($query)
+	{
+		return $query->where('due_at', '<=', Carbon::now());
+
+	}
+
+
 	/* Mutators & Accessors */
+
+	/**
+	 * Get a list of member id associated with the task.
+	 *
+	 * @return mixed
+	 */
+	public function getDirectoryAttribute()
+	{
+		return $this->household->getTaskImagesDir() . '/' . $this->image;
+	}
+
+	public function getTaskMembersAttribute()
+	{
+		return $this->members->lists('id')->toArray();
+	}
 
 	public function setNameAttribute($value)
 	{

@@ -6,7 +6,7 @@
                     <div class="form-group floating-label {!! $errors->has('name')?'has-error':'' !!}">
                         {!! Form::text('name', null, ['class' => 'form-control input-lg']) !!}
                         {!! Form::label('name', 'Task') !!}
-                        <p class="help-block">{!! $errors->first('name') !!}</p>
+                        <span class="help-block">{!! $errors->first('name') !!}</span>
                     </div>
                  </div>
 
@@ -19,7 +19,7 @@
                     	<label class="radio-inline radio-styled radio-danger" data-toggle="tooltip" title="Optional">
                          	{!! Form::radio('priority', '2') !!}
                          </label>
-                         <p class="help-block">{!! $errors->first('priority') !!}</p>
+                         <span class="help-block">{!! $errors->first('priority') !!}</span>
                     </div>
                  </div>
 
@@ -32,7 +32,9 @@
 	<div class="card-head style-primary">
 		<ul class="nav nav-tabs tabs-text-contrast tabs-accent nav-styled" data-toggle="tabs">
 			<li class="active"><a href="#tab-task-details">Details</a></li>
-			<li><a href="#tab-subtask">Subtask</a></li>
+			@if($submitButtonText === 'Create Task')
+			    <li><a href="#tab-subtask">Subtask</a></li>
+			@endif
 
 			{{-- Attach Image --}}
 			<li class="pull-right">
@@ -79,7 +81,7 @@
 							<div class="form-group {!! $errors->has('due_at')?'has-error':'' !!}">
 							    {!! Form::text('due_at', null, ['class' => 'form-control material-datetime']) !!}
 							    {!! Form::label('due_at', 'Due Date') !!}
-							    <p class="help-block">{!! $errors->first('due_at') !!}</p>
+							    <span class="help-block">{!! $errors->first('due_at') !!}</span>
 							</div>
 						</div>
 
@@ -96,7 +98,7 @@
 								    title="Use english phrases. Ex. everyday @2pm, every monday, mwf @7:00am ">
 								    </i>
 								</label>
-								<p class="help-block">{!! $errors->first('recurring_at') !!}</p>
+								<span class="help-block">{!! $errors->first('recurring_at') !!}</span>
 							</div>
 						</div>
 					</div>
@@ -105,13 +107,9 @@
                         {{-- Task Members --}}
 					    <div class="col-md-6">
                         	<div class="form-group {!! $errors->has('task_members')?'has-error':'' !!}">
-                        	    <select class="form-control select2-multi" name="task_members[]" multiple="multiple">
-                        	        @foreach($taskMembers as $member)
-                                        <option value="{{ $member->user->id }}">{{ $member->user->firstname }}</option>
-                        	        @endforeach
-                        	    </select>
+                            	{!! Form::select('task_members[]', $membersList, null, ['class' => 'form-control select2-multi', 'multiple']) !!}
                             	<label for="assign">Assign To</label>
-                            	<p class="help-block">{!! $errors->first('task_members') !!}</p>
+                            	<span class="help-block">{!! $errors->first('task_members') !!}</span>
                             </div>
                         </div>
 					    {{-- Description --}}
@@ -119,7 +117,7 @@
                             <div class="form-group {!! $errors->has('description')?'has-error':'' !!}">
                                 {!! Form::textarea('description', null, ['class' => 'form-control', 'rows' => '2']) !!}
                                 {!! Form::label('description', 'Description (Optional)') !!}
-                                <p class="help-block">{!! $errors->first('description') !!}</p>
+                                <span class="help-block">{!! $errors->first('description') !!}</span>
                     	    </div>
                     	</div>
 					</div>
@@ -134,23 +132,34 @@
 			</div>
 		</div>
 
-        {{-- Subtask Tab Content --}}
-		<div class="tab-pane" id="tab-subtask">
+		@if($submitButtonText === 'Create Task')
+            {{-- Subtask Tab Content --}}
+            <div class="tab-pane" id="tab-subtask">
 
-            <ul class="list-unstyled" id="subtaskList"></ul>
-		    <div class="form-group">
-		        {{-- Add Subtask Button --}}
-		    	<a class="btn btn-flat btn-default pull-right" data-duplicate="subtaskTmpl" data-target="#subtaskList">
-		    	    <span class="text-muted"><i class="md md-add"></i>&nbsp;Add Subtask</span>
-		    	</a>
-		    </div>
-		    {{-- This is a Note --}}
-		    <div class="row">
-                <div class="col-md-12">
-                    <p class="hint pd-lt-20">Note: Subtask is Optional.<br>If Subtask Assignment left empty, It will assign to all members of main task.</p>
+                <ul class="list-unstyled" id="subtaskList"></ul>
+                <div class="form-group">
+                    {{-- Add Subtask Button --}}
+                    <a class="btn btn-flat btn-default pull-right" data-duplicate="subtaskTmpl" data-target="#subtaskList">
+                        <span class="text-muted"><i class="md md-add"></i>&nbsp;Add Subtask</span>
+                    </a>
+                </div>
+                {{-- This is a Note --}}
+                <div class="row">
+                    <div class="col-md-12">
+                        <p class="hint pd-lt-20">Note: Subtask is Optional.<br>If Subtask Assignment left empty, It will assign to all members of main task.</p>
+                    </div>
                 </div>
             </div>
-		</div>
+        @endif
 
 	</div>
 	<!-- END FORM TAB PANES -->
+
+	<!-- BEGIN FORM FOOTER -->
+	<div class="card-actionbar">
+		<div class="card-actionbar-row text-muted">
+			{!! HTML::link('#', 'Cancel', ['class' => 'btn btn-flat weight600']) !!}
+			{!! Form::button($submitButtonText, ['type' => 'submit', 'class' => 'btn btn-flat weight600']) !!}
+		</div>
+	</div>
+	<!-- END FORM FOOTER -->

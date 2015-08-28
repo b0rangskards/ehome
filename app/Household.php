@@ -71,6 +71,15 @@ class Household extends Model
 
 	/* Relationships */
 
+	public function getMemberListAttribute()
+	{
+		$list = [];
+		foreach($this->members as $member){
+			$list[$member->user->id] = $member->user->firstname;
+		}
+		return $list;
+	}
+
 	public function members()
 	{
 		return $this->hasMany('App\HouseholdMember', 'household_id', 'id')
@@ -85,6 +94,7 @@ class Household extends Model
 	public function tasks()
 	{
 		return $this->hasMany('App\Task', 'household_id')
+			->orderBy('status', 'DESC')
 			->orderBy('due_at', 'DESC');
 	}
 

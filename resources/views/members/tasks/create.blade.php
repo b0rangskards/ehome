@@ -12,16 +12,7 @@
 
 {!! Form::open(['route' => 'task.store', 'files' => true]) !!}
 
-    @include('members.tasks.partials._task-form')
-
-	<!-- BEGIN FORM FOOTER -->
-	<div class="card-actionbar">
-		<div class="card-actionbar-row text-muted">
-			{!! HTML::link('#', 'Cancel', ['class' => 'btn btn-flat weight600']) !!}
-			{!! Form::button('Create Task', ['type' => 'submit', 'class' => 'btn btn-flat weight600']) !!}
-		</div>
-	</div>
-	<!-- END FORM FOOTER -->
+    @include('members.tasks.partials._task-form', ['submitButtonText' => 'Create Task'])
 
 {!! Form::close() !!}
 

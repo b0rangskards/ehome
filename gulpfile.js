@@ -32,6 +32,7 @@ elixir(function(mix) {
        dir.packageCss + 'select2.css',
        dir.packageCss + 'jasny-bootstrap.css',
        dir.packageCss + 'toastr.css',
+       dir.packageCss + 'jquery.dataTables.css',
        'materialadmin.css',
        'material-design-iconic-font.css'
     ], 'public/css/vendor.css');
@@ -52,11 +53,13 @@ elixir(function(mix) {
         dir.packageJs + 'select2.js',
         dir.packageJs + 'jasny-bootstrap.js',
         dir.packageJs + 'microtemplating.js',
+        dir.packageJs + 'jquery.dataTables.js',
         dir.bower  + 'mustache.js/mustache.js',
+        dir.bower + 'jquery.inputmask/dist/inputmask/jquery.inputmask.js',
         'constants.js',
         dir.coreJs + 'toastr.settings.js',
         dir.coreJs + 'App.js',
-        dir.coreJs + 'AppNavigation.js',
+        //dir.coreJs + 'AppNavigation.js',
         dir.coreJs + 'AppOffcanvas.js',
         dir.coreJs + 'AppCard.js',
         dir.coreJs + 'AppForm.js',
@@ -72,6 +75,10 @@ elixir(function(mix) {
         'common.js',
         'public/scripts.js'
     ], 'public/js/app.js');
+
+    mix.scripts([
+        'common.js'
+    ], 'public/js/common.js');
 
     // Transfer Gmap3
     mix.copy('./resources/assets/bower/gmap3/dist/gmap3.min.js', './public/js');

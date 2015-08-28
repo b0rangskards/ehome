@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Helpers\TaskHelper;
+use App\Notifications\NotificationMessageBuilder;
 use App\Transformers\NotificationTransformer;
 use Illuminate\Database\Eloquent\Model;
 use Laracasts\Presenter\PresentableTrait;
@@ -21,6 +22,11 @@ class Notification extends Model
 	public static function newNotification($from_userid, $to_userid, $title, $link = null)
 	{
 		return new static(compact('from_userid', 'to_userid', 'title', 'link'));
+	}
+
+	public static function notifyTaskExpiration(Task $task)
+	{
+		return new static(NotificationMessageBuilder::taskExpiration($task));
 	}
 
    public static function newTaskNote(TaskNote $note, $taskMembers)
@@ -78,6 +84,28 @@ class Notification extends Model
 		return $notification;
 	}
 
+	public static function updatedTask(Task $task)
+	{
+		$notification = null;
+		$title = TaskHelper::createUpdatedTaskNotificationTitle($task->name);
+		$link = TaskHelper::createNotificationLink($task->id);
+		$from_userid = $task->household->head_id;
+
+		//get members
+		foreach ( $task->members as $member ) {
+			$notification = static::newNotification(
+				$from_userid,
+				$member->id,
+				$title,
+				$link
+			);
+			// persist
+			$notification->save();
+		}
+
+		return $notification;
+	}
+
 	public static function createFromSubtasks(Task $task)
 	{
 		if ( !$task->hasSubtask() ) return false;
@@ -106,6 +134,25 @@ class Notification extends Model
 		$notification->seen = 1;
 
 		return $notification->save();
+	}
+
+	public function send()
+	{
+		$this->save();
+
+		return $this;
+	}
+
+	public function addSender($senderId)
+	{
+		$this->from_userid = $senderId;
+		return $this;
+	}
+
+	public function addRecipient($recipientId)
+	{
+		$this->to_userid = $recipientId;
+		return $this;
 	}
 
 	public function sender()

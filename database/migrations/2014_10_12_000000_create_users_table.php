@@ -25,7 +25,9 @@ class CreateUsersTable extends Migration
 	        $table->string('activation_code', 30)->nullable();
 	        $table->timestamp('activated_at')->nullable();
 	        $table->timestamp('last_login')->nullable();
-            $table->rememberToken();
+	        $table->string('app_token')->nullable();
+	        $table->string('gcmid')->nullable();
+	        $table->rememberToken();
 	        $table->softDeletes();
             $table->timestamps();
         });

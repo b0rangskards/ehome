@@ -29,7 +29,7 @@ class RegisterUserRequest extends Request
 	        'lastname' => 'required|max:100',
 	        'middleinitial' => 'max:1',
 	        'gender' => 'required|max:6',
-	        'mobile_no' => 'max:20',
+	        'mobile_no' => 'max:20|unique:users',
 	        'email' => 'required|email|max:255|unique:users'
         ];
     }

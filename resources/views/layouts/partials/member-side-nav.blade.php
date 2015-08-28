@@ -1,5 +1,5 @@
 <!-- BEGIN MENUBAR-->
-<div id="menubar" class="menubar-inverse ">
+<div id="menubar" class="menubar-inverse"> <!-- class="menubar-inverse" -->
 	<div class="menubar-fixed-panel">
 		<div>
 			<a class="btn btn-icon-toggle btn-default menubar-toggle" data-toggle="menubar" href="javascript:void(0);">
@@ -19,7 +19,7 @@
 
 			<!-- BEGIN DASHBOARD -->
 			<li>
-				<a href="{{ route('home') }}" >
+				<a href="{{ route('home') }}" data-toggle="tooltip" data-placement="right" title="Dashboard">
 					<div class="gui-icon"><i class="md md-dashboard"></i></div>
 					<span class="title">Dashboard</span>
 				</a>
@@ -28,7 +28,7 @@
 
 			<!-- BEGIN HOUSEHOLD -->
 			<li>
-				<a href="{{ route('household.index') }}">
+				<a href="{{ route('household.index') }}" data-toggle="tooltip" data-placement="right" title="Household">
 					<div class="gui-icon"><i class="md md-people"></i></div>
 					<span class="title">My Household</span>
 				</a>
@@ -37,7 +37,7 @@
 
 			<!-- BEGIN TASKS -->
 			<li>
-				<a href="{{ route('task.index') }}">
+				<a href="{{ route('task.index')}}" data-toggle="tooltip" data-placement="right" title="Tasks">
 					<div class="gui-icon"><i class="md md-event-note"></i></div>
 					<span class="title">My Tasks</span>
 				</a>
@@ -45,12 +45,14 @@
 			<!-- END TASKS -->
 
 			<!-- BEGIN SUBSCRIPTIONS -->
+			@if($currentUser->isHead())
 			<li>
-				<a href="#" >
+				<a href="{{route('subscriptions.index')}}" data-toggle="tooltip" data-placement="right" title="Subscriptions">
 					<div class="gui-icon"><i class="md md-stars"></i></div>
 					<span class="title">Subscriptions</span>
 				</a>
 			</li>
+			@endif
 			<!-- END SUBSCRIPTIONS -->
 
 		</ul>

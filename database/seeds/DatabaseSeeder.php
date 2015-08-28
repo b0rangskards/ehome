@@ -8,6 +8,7 @@ class DatabaseSeeder extends BaseSeeder
 		'users',
 		'households',
 		'household_members',
+		'subscription_types'
 	];
 
     /**

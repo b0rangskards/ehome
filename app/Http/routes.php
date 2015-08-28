@@ -15,6 +15,7 @@
 use App\Events\SampleEvent;
 use App\Events\UserHasRegistered;
 use App\Notification;
+use App\Repositories\UserRepository;
 use App\Task;
 use App\TaskNote;
 use App\User;
@@ -38,8 +39,8 @@ Route::group(['prefix' => 'auth', 'as' => 'auth.'], function(){
 
 /* Admin pages */
 Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
-	// Dashboard
 	Route::get('dashboard', ['as' => 'dashboard', 'uses' => 'Admin\AdminPagesController@getDashboard']);
+	Route::get('users', ['as' => 'users.index', 'uses' => 'Admin\UsersController@index']);
 });
 
 /* Member pages */
@@ -55,31 +56,23 @@ Route::post('/task/{task}/add-note', ['as' => 'task.add-note', 'uses' => 'TasksC
 Route::get('/notifications', ['as' => 'notification.index', 'uses' => 'NotificationsController@index']);
 Route::patch('/notification/markseen', ['as' => 'notification.markseen', 'uses' => 'NotificationsController@markSeen']);
 
+Route::get('profile/{currentUser}', ['as' => 'profile.index', 'uses' => 'UserProfileController@index']);
+Route::get('profile/{user}/edit', ['as' => 'profile.edit', 'uses' => 'UserProfileController@edit']);
+Route::put('profile/{user}/update', ['as' => 'profile.update', 'uses' => 'UserProfileController@update']);
+Route::get('profile/{currentUser}/settings', ['as' => 'profile.settings', 'uses' => 'UserProfileController@getSettings']);
+Route::delete('profile/{user}/deactivate', ['as' => 'profile.deactivate', 'uses' => 'UserProfileController@deactivate']);
+
+Route::get('/subscriptions', ['as' => 'subscriptions.index', 'uses' => 'UserSubscriptionsController@index']);
+
+
 /* Test route */
-Route::get('test', function(){
-	$task = Task::find(7);
-	$exceptUserId = 10;
-
-	$membersCollection = $task->members;
-	$membersCollection->push($task->household->head);
-
-		foreach ( $membersCollection as $key => $member ) {
-			if ( $member->id === $exceptUserId ) {
-				$membersCollection->pull($key);
-			}
-		}
-	dd($membersCollection->toArray());
-});
-
-Route::get('pusher', function(){
-	$user = User::find(1);
-
-	event(new UserHasRegistered($user));
-
-	return 'done';
+Route::get('test', function () {
+	dd(Auth::user()->tasks);
 });
 
 /* Route Model Binding */
+Route::model('user', App\User::class);
 Route::model('household', App\Household::class);
 Route::model('member', App\HouseholdMember::class);
 Route::model('task', App\Task::class);
+

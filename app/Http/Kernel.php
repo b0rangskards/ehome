@@ -31,5 +31,6 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
 	    'household.check' => \App\Http\Middleware\CheckHouseholdSetup::class,
 	    'is.householdhead' => \App\Http\Middleware\RedirectIfNotHouseholdHead::class,
+	    'must.be.head' => \App\Http\Middleware\MustBeHouseholdHead::class,
     ];
 }

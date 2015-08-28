@@ -4,15 +4,10 @@ namespace App\Jobs;
 
 use App\Events\TaskHasCreated;
 use App\Helpers\FileHelper;
-use App\Household;
-use App\Jobs\Job;
-use App\Notification;
 use App\Repositories\TaskRepository;
 use App\Task;
-use File;
 use Illuminate\Contracts\Bus\SelfHandling;
 use Input;
-use Intervention\Image\Facades\Image;
 
 class CreateTaskJob extends Job implements SelfHandling
 {
@@ -121,10 +116,8 @@ class CreateTaskJob extends Job implements SelfHandling
 	    // Create Subtask if any...
 		$this->createSubtask($this->subtasks, $task);
 
-	    $notification = Notification::createFromTask($task);
-
 	    // Fire event for Task | TODO Send SMS to task members who have mobile number
-	    event(new TaskHasCreated($task, $notification));
+	    event(new TaskHasCreated($task));
     }
 
 

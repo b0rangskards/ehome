@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Events\UserHasActivated;
 use App\Jobs\Job;
 use App\Repositories\UserRepository;
 use App\User;
@@ -41,5 +42,7 @@ class ActivateAccountJob extends Job implements SelfHandling
         $user = $this->user->activateAccount($this->password);
 
         $repository->save($user);
+
+	    event(new UserHasActivated($user));
     }
 }

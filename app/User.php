@@ -12,6 +12,7 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 use Laracasts\Presenter\PresentableTrait;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
@@ -39,7 +40,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      */
     protected $fillable = ['firstname', 'lastname', 'middleinitial', 'gender',
 	                       'mobile_no', 'email', 'password', 'role', 'activation_code',
-	                       'activated_at', 'last_login'];
+	                       'activated_at', 'last_login', 'app_token', 'gcmid'];
 
     /**
      * The attributes excluded from the model's JSON form.
@@ -57,7 +58,28 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
 	public static $userBaseChannel = 'user-';
 
+	public static $adminBaseChannel = 'admin-';
 
+	/**
+	 * Update user.
+	 *
+	 * @param $id
+	 * @param $firstname
+	 * @param $lastname
+	 * @param $middleinitial
+	 * @param $gender
+	 * @param $email
+	 * @param $mobile_no
+	 * @return mixed
+	 */
+	public static function updateUser($id, $firstname, $lastname, $middleinitial, $gender, $email, $mobile_no)
+	{
+		$user = static::findOrFail($id);
+
+		$user->fill(compact('firstname', 'lastname', 'middleinitial', 'gender', 'email'));
+
+		return $user;
+	}
 	/**
 	 * Deactivate user.
 	 * Soft Deletes it.
@@ -157,6 +179,18 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 		return $this;
 	}
 
+
+	/**
+	 * Determine if this user is household head or not.
+	 *
+	 * @return bool
+	 */
+	public function isAdmin()
+	{
+		return $this->role === Config::get('enums.roles.admin');
+	}
+
+
 	/**
 	 * Determine if this user is household head or not.
 	 *
@@ -165,6 +199,16 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	public function isHead()
 	{
 		return $this->role === Config::get('enums.roles.hh_head');
+	}
+
+	/**
+	 * Determine if this user is household member or not.
+	 *
+	 * @return bool
+	 */
+	public function isMember()
+	{
+		return $this->role === Config::get('enums.roles.hh_member');
 	}
 
 	/**
@@ -195,6 +239,17 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 		return self::$userBaseChannel.$this->id;
 	}
 
+	/**
+	 * Get channel for admin user.
+	 * Used for broadcasting events.
+	 *
+	 * @return string
+	 */
+	public function getAdminChannel()
+	{
+		return self::$adminBaseChannel . $this->id;
+	}
+
 	/*
 	 * Touch last_login timestamp
 	 * Used When Logging in
@@ -205,11 +260,40 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 		$this->save();
 	}
 
+	public function completedTasks()
+	{
+		if ( !$this->tasks ) return null;
+
+		return $this->tasks->where('status', 'completed');
+	}
+
+	public function pendingTasks()
+	{
+		if(!$this->tasks) return null;
+
+		return $this->tasks->where('status', 'pending');
+//		return Task::where('status','pending')
+//			->whereHas(['household' => function(){
+//
+//			}])
+//			->get();
+	}
+
+	public function isActivated()
+	{
+		return is_null($this->activation_code) && $this->activated_at;
+	}
+	public function deactivated()
+	{
+		return !is_null($this->deleted_at);
+	}
+
 	/* Relationships */
 
 	public function tasks()
 	{
 		return $this->belongsToMany('App\Task', 'task_members')
+			->orderBy('status', 'DESC')
 			->orderBy('due_at', 'DESC');
 	}
 
@@ -238,7 +322,46 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 			->where('seen', 0);
 	}
 
+	/* Scope Query */
+
+	public function scopeCompleted($query)
+	{
+		return $query->where('status', 'done');
+	}
+
+	public function scopePending($query)
+	{
+		return $query->where('status', 'pending');
+	}
+
 	/* Mutators */
+
+	public function getMemberHouseholdAttribute()
+	{
+		if ($this->isHead()) {
+			if(!$this->household) return new Collection();
+
+			return $this->household->members;
+		}
+
+		$members = $this->household->getHouseholdMembers($this->id);
+		$members->push($this->household->head);
+		return $members;
+	}
+	public function getTasksAttribute()
+	{
+		if($this->isHead())
+		{
+			if(!$this->household) return null;
+			return $this->household->tasks;
+		}
+		elseif($this->isMember())
+		{
+			return $this->tasks;
+		}
+
+		return Task::all();
+	}
 
 	public function getHouseholdAttribute()
 	{

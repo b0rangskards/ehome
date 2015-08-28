@@ -29,13 +29,13 @@
 								<div class="form-group {!! $errors->has('email')?'has-error':'' !!}">
 									{!! Form::email('email', null, ['class' => 'form-control']) !!}
 									{!! Form::label('email', 'Email') !!}
-									<p class="help-block">{!! $errors->first('email') !!}</p>
+									<span class="help-block">{!! $errors->first('email') !!}</span>
 								</div>
 								{{-- Password --}}
 								<div class="form-group {!! $errors->has('password')?'has-error':'' !!}">
 									{!! Form::password('password', ['class' => 'form-control']) !!}
 									{!! Form::label('password', 'Password') !!}
-									<p class="help-block">{!! $errors->first('password') !!}</p>
+									<span class="help-block">{!! $errors->first('password') !!}</span>
 								</div>
 								<div class="form-group">
 									<p class="help-block"><a href="#">Forgotten?</a></p>

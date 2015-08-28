@@ -23,7 +23,9 @@
         <div id="content">
             <section>
 
-                @include('layouts.partials.breadcrumbs')
+                @if(!Request::is('home'))
+                    @include('layouts.partials.breadcrumbs')
+                @endif
 
                 <div class="section-body contain-lg">
                     @yield('content')

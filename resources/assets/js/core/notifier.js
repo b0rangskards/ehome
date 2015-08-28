@@ -66,9 +66,11 @@
             (new App.Notifier).generateNotification(data);
         },
         whenNewTaskNoteIsAdded: function(data) {
-            console.log(data);
             (new App.Notifier).generateNotification(data);
             (new App.TaskNote).newNote(data.note);
+        },
+        whenTaskIsUpdated: function(data) {
+            (new App.Notifier).generateNotification(data);
         }
     };
 

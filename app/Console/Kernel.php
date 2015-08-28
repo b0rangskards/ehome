@@ -14,7 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         \App\Console\Commands\Inspire::class,
-//	    \App\Console\Commands\CheckTaskExpiration::class,
+	    \App\Console\Commands\TaskExpiration::class,
     ];
 
     /**
@@ -28,7 +28,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('inspire')
 	             ->monthly();
 
-//	    $schedule->command('task:check')
+//	    $schedule->command('task:expiration')
 //		         ->everyMinute();
     }
 }

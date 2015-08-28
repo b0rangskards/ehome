@@ -1,5 +1,10 @@
 <!-- BEGIN SEARCH NAV -->
-<div class="col-sm-4 col-md-3 col-lg-3">
+<div class="col-sm-3">
+    <div class="nav-action">
+        <h4 class="inline-block text-medium">Household</h4>
+        <hr/>
+    </div>
+
 	<ul class="nav nav-pills nav-stacked">
 		<li><a href="{!! route('household.index') !!}">Household</a></li>
 		<li><a href="{!! route('household.member.index', $household->id) !!}">Members
@@ -7,6 +12,8 @@
 		        <small class="badge style-primary pull-right text-bold opacity-75">{!! count($householdMembers) !!}</small>
 		    @endif
 		</a></li>
+
+		<hr/>
 
         @if(count($householdMembers) > 0)
             <li class="hidden-xs"><small>Quick Contact</small></li>

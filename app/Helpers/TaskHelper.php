@@ -5,6 +5,11 @@ use App\TaskNote;
 
 class TaskHelper {
 
+	public static function createUpdatedTaskNotificationTitle($taskName)
+	{
+		return "Task has been updated: \"$taskName\"";
+	}
+
 	public static function newTaskNoteNotification(TaskNote $note)
 	{
 		return "New Note: \"{$note->present()->prettyNote}\" \n from task \"{$note->task->present()->prettyName}\"";

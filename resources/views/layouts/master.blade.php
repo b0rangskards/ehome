@@ -19,6 +19,7 @@
 
         <div id="content">
             <section>
+
                 @include('layouts.partials.breadcrumbs')
 
                 <div class="section-body contain-lg">
@@ -33,5 +34,7 @@
 	<!-- END BASE -->
 
     {!! HTML::script('js/vendor.js') !!}
+    {!! HTML::script('js/common.js') !!}
+
 </body>
 </html>

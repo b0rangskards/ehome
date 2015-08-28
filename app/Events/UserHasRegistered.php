@@ -3,14 +3,13 @@
 namespace App\Events;
 
 use App\Events\Event;
+use App\Repositories\UserRepository;
 use App\User;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 class UserHasRegistered extends Event implements ShouldBroadcast
 {
-    use SerializesModels;
-
 	public $user;
 
 	/**
@@ -31,6 +30,6 @@ class UserHasRegistered extends Event implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return ['test-channel'];
+	    return UserRepository::getAllAdminChannels();
     }
 }

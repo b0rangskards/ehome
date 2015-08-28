@@ -19,13 +19,12 @@ class TaskHasCreated extends Event implements ShouldBroadcast
 	 * Create a new event instance.
 	 *
 	 * @param Task $task
-	 * @param Notification $notification
 	 * @return \App\Events\TaskHasCreated
 	 */
-    public function __construct(Task $task, Notification $notification)
+    public function __construct(Task $task)
     {
 	    $this->task = $task;
-	    $this->notification = $notification->getTransformedData();
+	    $this->notification = Notification::createFromTask($task)->getTransformedData();
     }
 
     /**
