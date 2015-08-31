@@ -58,6 +58,7 @@ class Task extends Model
 		return $task;
 	}
 
+
 	public static function createSubtask(Task $parentTask, array $subtaskData)
 	{
 		$subtask = static::createTask(

@@ -1,5 +1,5 @@
 	<!-- BEGIN HEADER-->
-		<header id="header">
+		<header id="header" class="header-inverse">
 			<div class="headerbar">
 				<!-- Brand and toggle get grouped for better mobile display -->
 				<div class="headerbar-left">
@@ -7,7 +7,7 @@
 						<li class="header-nav-brand" >
 							<div class="brand-holder">
 								<a href="{{route('home')}}">
-									<span class="text-lg text-bold text-primary">eHome</span>
+									<img src="{{asset('images/2_corporate/logo.png')}}" alt=""/>
 								</a>
 							</div>
 						</li>
@@ -25,10 +25,10 @@
 						{{-- Notifications --}}
 						<li class="dropdown">
 							<a href="javascript:void(0);" class="btn btn-icon-toggle btn-default" data-toggle="dropdown">
-								<i class="fa fa-bell"></i>
-								@if(count($currentUser->unseenNotifications) > 0)
-								    <sup class="badge style-danger" id="notifications-ctr">{{count($currentUser->unseenNotifications)}}</sup>
-								@endif
+								<i class="fa fa-bell text-default-light"></i>
+								{{--@if(count($currentUser->unseenNotifications) > 0)--}}
+								    <sup class="badge style-danger {{count($currentUser->unseenNotifications)?'show':'hidden'}}" id="notifications-ctr">{{count($currentUser->unseenNotifications)}}</sup>
+								{{--@endif--}}
 							</a>
 							<ul class="dropdown-menu animation-expand notifications-ul">
 								<li class="dropdown-header">Notifications</li>
@@ -60,7 +60,11 @@
 
 								<li><a href="{{route('profile.index', $currentUser->present()->slugName)}}">Profile</a></li>
 
-								<li><a href="#">My Tasks<span class="badge style-danger pull-right">16</span></a></li>
+								<li><a href="{{route('task.index')}}">My Tasks
+                                    @if($currentUser->pendingTasks()->count())
+                                        <span class="badge style-danger pull-right">{{$currentUser->pendingTasks()->count()}}</span>
+                                    @endif
+								</a></li>
 
 								<li class="divider"></li>
 

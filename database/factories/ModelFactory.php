@@ -11,6 +11,35 @@
 |
 */
 use App\Household;
+use App\SubscriptionType;
+use App\User;
+
+$factory->defineAs(App\Subscription::class, 'free', function ($faker) {
+
+	$userId = $faker->randomElement(User::lists('id')->toArray());
+	$freeTrial = SubscriptionType::getFreeTrial();
+
+
+	return [
+		'user_id' => $userId,
+		'type_id' => $freeTrial->id,
+		'subscription_start' => Carbon::now(),
+		'subscription_end' => Carbon::now()->addDays($freeTrial->no_of_days)
+	];
+});
+
+$factory->defineAs(App\Subscription::class, 'premium', function ($faker) {
+
+	$userId = $faker->randomElement(User::lists('id')->toArray());
+	$premium = SubscriptionType::getPremium();
+
+	return [
+		'user_id' => $userId,
+		'type_id' => $premium->id,
+		'subscription_start' => Carbon::now(),
+		'subscription_end' => Carbon::now()->addDays($premium->no_of_days)
+	];
+});
 
 $factory->define(App\User::class, function ($faker) {
 	$ptBRFaker = Faker\Factory::create('pt_BR');
@@ -31,6 +60,7 @@ $factory->define(App\User::class, function ($faker) {
         'remember_token' => str_random(10),
     ];
 });
+
 
 $factory->defineAs(App\User::class, 'admin', function ($faker) use ($factory) {
 	$role = Config::get('enums.roles.admin');
@@ -73,3 +103,4 @@ $factory->define(App\HouseholdMember::class, function ($faker) use ($factory) {
 		'user_id' => $user->id,
 	];
 });
+

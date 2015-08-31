@@ -8,7 +8,7 @@ use App\Events\TaskStatusUpdated;
 use App\Events\UserHasActivated;
 use App\Events\UserHasRegistered;
 use App\Handlers\Events\GenerateTaskUpdatedNotification;
-use App\Handlers\Events\InitializeFreeTrial;
+use App\Handlers\Events\RegisterFreeTrial;
 use App\Handlers\Events\NotifyTaskMembers;
 use App\Handlers\Events\SendConfirmationEmail;
 use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
@@ -32,7 +32,7 @@ class EventServiceProvider extends ServiceProvider
 	    ],
 
 	    UserHasActivated::class => [
-		    InitializeFreeTrial::class,
+		    RegisterFreeTrial::class,
 	    ],
 
 	    TaskHasCreated::class => [

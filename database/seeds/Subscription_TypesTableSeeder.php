@@ -13,8 +13,8 @@ class Subscription_TypesTableSeeder extends Seeder
     public function run()
     {
 	    $subscriptions = [
-		  ['type' => 'free', 'no_of_days' => 3, 'amount' => 0],
-		  ['type' => 'premium', 'no_of_days' => 30, 'amount' => 10]
+		  ['type' => 'free', 'no_of_days' => 15, 'amount' => 0],
+		  ['type' => 'premium', 'no_of_days' => 90, 'amount' => 700]
 	    ];
 
 	    foreach($subscriptions as $subscription) {

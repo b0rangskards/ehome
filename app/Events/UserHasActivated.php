@@ -37,6 +37,7 @@ class UserHasActivated extends Event implements ShouldBroadcast
 	    if($this->user->isMember()) {
 		    return $this->user->household->head->getChannel();
 	    }
+
 	    return UserRepository::getAllAdminChannels();
     }
 }

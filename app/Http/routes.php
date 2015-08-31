@@ -16,6 +16,7 @@ use App\Events\SampleEvent;
 use App\Events\UserHasRegistered;
 use App\Notification;
 use App\Repositories\UserRepository;
+use App\SubscriptionType;
 use App\Task;
 use App\TaskNote;
 use App\User;
@@ -64,13 +65,24 @@ Route::delete('profile/{user}/deactivate', ['as' => 'profile.deactivate', 'uses'
 
 Route::get('/subscriptions', ['as' => 'subscriptions.index', 'uses' => 'UserSubscriptionsController@index']);
 
-
+Route::get('/subscriptions/{user}/extend', ['as' => 'subscriptions.extend', 'uses' => 'UserSubscriptionsController@getExtension']);
+Route::post('/subscriptions/{user}/extend', ['as' => 'subscriptions.extend', 'uses' => 'UserSubscriptionsController@postExtension']);
+Route::post('/subscriptions', ['as' => 'subscriptions.store', 'uses' => 'UserSubscriptionsController@store']);
+Route::get('/subscriptions/{user}/extend/{subscription_type}/success', ['as' => 'subscriptions.success', 'uses' => 'UserSubscriptionsController@getSuccessSubscription']);
+Route::get('/subscriptions/{user}/history', ['as' => 'subscriptions.history', 'uses' => 'UserSubscriptionsController@getHistory']);
 /* Test route */
 Route::get('test', function () {
-	dd(Auth::user()->tasks);
+	$expire_date = Carbon::create(2015, 8, 29, 7, 30);
+
+	$now = Carbon::now();
+
+//	dd($expire_date->diffForHumans($now));
+	dd($now);
+//	dd(SubscriptionType::getFreeTrial());
 });
 
 /* Route Model Binding */
+Route::model('subscription_type', App\SubscriptionType::class);
 Route::model('user', App\User::class);
 Route::model('household', App\Household::class);
 Route::model('member', App\HouseholdMember::class);

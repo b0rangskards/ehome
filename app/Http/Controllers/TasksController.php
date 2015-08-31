@@ -28,6 +28,8 @@ class TasksController extends Controller
 
 		$this->middleware('household.check');
 
+		$this->middleware('check.subscription',['only' => ['create', 'store']]);
+
 		// create a filter for head only
 		// only household heads allowed to create,update, and delete task
 

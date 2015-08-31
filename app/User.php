@@ -7,6 +7,7 @@ use App\Helpers\RegistrationHelper;
 use Carbon;
 use Config;
 use Illuminate\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Collection as ModelCollection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -262,21 +263,21 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
 	public function completedTasks()
 	{
-		if ( !$this->tasks ) return null;
+		if ( !$this->tasks ) return new ModelCollection();
 
 		return $this->tasks->where('status', 'completed');
 	}
 
 	public function pendingTasks()
 	{
-		if(!$this->tasks) return null;
+		if(!$this->tasks) return new ModelCollection();
 
 		return $this->tasks->where('status', 'pending');
-//		return Task::where('status','pending')
-//			->whereHas(['household' => function(){
-//
-//			}])
-//			->get();
+	}
+
+	public function taskActions()
+	{
+		return TaskNote::getLatestNotes($this->id);
 	}
 
 	public function isActivated()
@@ -289,6 +290,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	}
 
 	/* Relationships */
+
+	public function subscriptions()
+	{
+		return $this->hasMany('App\Subscription', 'user_id', 'id');
+	}
 
 	public function tasks()
 	{
@@ -336,6 +342,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
 	/* Mutators */
 
+	public function getSubscriptionAttribute()
+	{
+		return $this->subscriptions()->latest()->first();
+	}
+
 	public function getMemberHouseholdAttribute()
 	{
 		if ($this->isHead()) {
@@ -352,12 +363,14 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	{
 		if($this->isHead())
 		{
-			if(!$this->household) return null;
+			if(!$this->household) return new ModelCollection();
 			return $this->household->tasks;
 		}
 		elseif($this->isMember())
 		{
-			return $this->tasks;
+//			if($this->getRelation('tasks')) return new ModelCollection();
+
+			return $this->tasks()->get();
 		}
 
 		return Task::all();

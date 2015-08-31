@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Transformers\TaskNoteTransformer;
+use Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Laracasts\Presenter\PresentableTrait;
 
@@ -19,6 +20,8 @@ class TaskNote extends Model
 
 	protected $fillable = ['user_id', 'task_id', 'note'];
 
+	protected $table = 'task_notes';
+
     public static function newNote($user_id, $task_id, $note)
 	{
 		return new static(compact('user_id', 'task_id', 'note'));
@@ -29,6 +32,13 @@ class TaskNote extends Model
 		$transformer = new TaskNoteTransformer();
 
 		return $transformer->transform($this);
+	}
+
+	public static function getLatestNotes($userId)
+	{
+		return static::where('user_id', $userId)
+			->where('created_at', '>=', Carbon::now()->subDay())
+			->get();
 	}
 
 	/* Relationships */

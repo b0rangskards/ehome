@@ -6,13 +6,6 @@
                     <span class="pixfort_st">Us</span>
             </span>
 		</div>
-
-
-        <div class="nine columns omega ">
-        {{--<div class="socbuttons">--}}
-            {{--<div class="likes_st">Your likes &amp; share makes us happy!</div>--}}
-        {{--</div>--}}
-	    </div><!-- container -->
     </div>
 </div>
 

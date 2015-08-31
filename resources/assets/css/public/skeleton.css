@@ -202,7 +202,7 @@
         .container .fifteen.columns,
         .container .sixteen.columns,
         .container .one-third.column,
-        .container .two-thirds.column { width: 420px; }
+        .container .two-thirds.column { width: 420px;}
     }
 
 
@@ -240,3 +240,12 @@
       width: 0;
       height: 0;
     }
+
+    div.subscribe_st,
+    div.subscribe_st:before,
+    div.subscribe_st:after {
+        -webkit-box-sizing: content-box;
+        -moz-box-sizing: content-box;
+        box-sizing: content-box;
+    }
+

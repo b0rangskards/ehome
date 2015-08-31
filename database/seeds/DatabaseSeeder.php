@@ -5,10 +5,10 @@ use Illuminate\Database\Eloquent\Model;
 class DatabaseSeeder extends BaseSeeder
 {
 	protected $tables = [
+		'subscription_types',
 		'users',
 		'households',
 		'household_members',
-		'subscription_types'
 	];
 
     /**

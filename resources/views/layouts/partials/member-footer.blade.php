@@ -30,7 +30,6 @@
 
      channel.bind('App\\Events\\NewTaskNoteHasCreated', App.Listeners.Task.whenNewTaskNoteIsAdded);
 
-
    </script>
 
 </body>

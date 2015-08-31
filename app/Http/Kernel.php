@@ -32,5 +32,6 @@ class Kernel extends HttpKernel
 	    'household.check' => \App\Http\Middleware\CheckHouseholdSetup::class,
 	    'is.householdhead' => \App\Http\Middleware\RedirectIfNotHouseholdHead::class,
 	    'must.be.head' => \App\Http\Middleware\MustBeHouseholdHead::class,
+	    'check.subscription' => \App\Http\Middleware\CheckSubscription::class,
     ];
 }

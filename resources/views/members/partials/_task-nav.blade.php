@@ -27,12 +27,16 @@
 		{{--</li>--}}
 		<li class="text-muted">
 		    <a href="#"><i class="md md-forward"></i>&nbsp;Actions
-		        <small class="badge style-primary pull-right text-bold opacity-75">1</small>
+		    @if($currentUser->taskActions()->count())
+		        <small class="badge style-primary pull-right text-bold opacity-75">{{$currentUser->taskActions()->count()}}</small>
+		    @endif
 		    </a>
 		</li>
 		<li class="text-muted">
             <a href="#"><i class="md md-check"></i>&nbsp;Completed
-                <small class="badge style-primary pull-right text-bold opacity-75">1</small>
+            @if($currentUser->completedTasks()->count())
+                <small class="badge style-primary pull-right text-bold opacity-75">{{$currentUser->completedTasks()->count()}}</small>
+            @endif
             </a>
         </li>
 	</ul>

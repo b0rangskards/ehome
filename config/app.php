@@ -151,6 +151,7 @@ return [
 	    App\Providers\ValidatorServiceProvider::class,
 	    Intervention\Image\ImageServiceProvider::class,
 	    Laracasts\Utilities\JavaScript\JavascriptServiceProvider::class,
+	    Ignited\LaravelOmnipay\LaravelOmnipayServiceProvider::class,
 	    /*
 	     * Development Service Providers...
 	     */
@@ -210,7 +211,7 @@ return [
 	    'Image'     => Intervention\Image\Facades\Image::class,
 	    'FileHelper'=> App\Helpers\FileHelper::class,
 	    'JavaScript'=> Laracasts\Utilities\JavaScript\JavaScriptFacade::class,
-
+	    'Omnipay'   => Ignited\LaravelOmnipay\Facades\OmnipayFacade::class,
     ],
 
 ];

@@ -52848,8 +52848,19 @@ toastr.options = {
        var self = this;
 
        this.updateCount = function() {
-           var currentCount = parseInt($('#notifications-ctr').text());
-           $('#notifications-ctr').text(++currentCount);
+           var notificationsElement = $('#notifications-ctr');
+
+           var currentCount = parseInt(notificationsElement.text()) || 0;
+
+           if(currentCount === 0)
+           {
+               notificationsElement.removeClass('hidden').text(++currentCount);
+               return;
+           }
+
+           console.log('current count '+currentCount);
+
+           notificationsElement.text(++currentCount);
        };
        this.addItem = function(notification) {
            self.updateCount();

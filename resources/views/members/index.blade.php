@@ -5,13 +5,17 @@
 @if($currentUser->isHead())
     <div class="row">
         {{-- all md-3 --}}
-        @include('members.widgets._completed-task')
+        @include('members.widgets._completed-task', ['completedTasksCount' => $currentUser->completedTasks()->count()])
 
-        @include('members.widgets._pending-task')
+        @include('members.widgets._pending-task', ['pendingTasksCount' => $currentUser->pendingTasks()->count()])
 
-        @include('members.widgets._new-task-actions')
+        @include('members.widgets._new-task-actions', ['taskActionsCount' => $currentUser->taskActions()->count()])
 
-        @include('members.widgets._subscription-time-left')
+        @if(!$currentUser->subscription->isExpired())
+            @include('members.widgets._subscription-time-left', ['timeLeft' => $currentUser->subscription->present()->timeLeft])
+        @else
+            @include('members.widgets._subscription-extend', ['user' => $currentUser]);
+        @endif
     </div><!--end .row -->
 
     <div class="row">
