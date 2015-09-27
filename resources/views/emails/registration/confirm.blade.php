@@ -13,7 +13,11 @@
             <br/>
             ---
             <br/>
-            <a href="{!! $link !!}">Click here to activate.</a>
+
+            Click link below to activate.
+            <br/>
+            {{$link}}
+
             <br/>
         </div>
 

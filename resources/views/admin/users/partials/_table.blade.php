@@ -18,18 +18,27 @@
                                     <td><span class="text-default-light">{{$user->present()->prettyName}}</span></td>
                                     <td><span class="text-default-light">{{$user->present()->prettyRole}}</span></td>
                                     <td>
-                                        @if($user->isActivated())
-                                            <span class="text-success">Activated</span>
+                                        @if($user->isBanned())
+                                            <span class="text-danger">Banned</span>
                                         @elseif($user->deactivated())
-                                            <span class="text-danger">Activated</span>
+                                            <span class="text-danger">Deactivated</span>
+                                        @elseif($user->isActivated())
+                                            <span class="text-success">Activated</span>
                                         @else
                                             <span class="text-muted">Pending</span>
                                         @endif
                                     </td>
                                     <td class="text-center">
-                                        {!! Form::open(['method' => 'DELETE', 'data-form-remote']) !!}
-                                            {!! Form::submit('Ban User', ['class' => 'btn btn-default btn-danger ink-reaction', 'data-confirm' => 'Ban User?', 'data-confirm-yes' => 'Yes Ban User']) !!}
-                                        {!! Form::close() !!}
+                                        @if(!($user->deactivated() && $user->isBanned()))
+                                            {!! Form::open(['method' => 'DELETE', 'route' => ['admin.users.ban', $user->id], 'data-form-remote']) !!}
+                                                {!! Form::submit('Ban User', ['class' => 'btn btn-danger ink-reaction', 'data-confirm' => 'Ban User?', 'data-confirm-yes' => 'Yes Ban User']) !!}
+                                            {!! Form::close() !!}
+                                        @endif
+                                        {{--@if($user->isBanned())--}}
+                                            {{--{!! Form::open(['method' => 'PUT', 'route' => ['admin.users.revoke', $user->id], 'data-form-remote']) !!}--}}
+                                                {{--{!! Form::submit('Revoke Ban', ['class' => 'btn btn-success ink-reaction', 'data-confirm' => 'Revoke Ban?', 'data-confirm-yes' => 'Yes Revoke Ban']) !!}--}}
+                                            {{--{!! Form::close() !!}--}}
+                                        {{--@endif--}}
                                     </td>
                                 </tr>
                             @endforeach

@@ -14,7 +14,9 @@
         <div class="card">
             <div class="card-head">
                 <header>{!!wordwrap($task->present()->prettyName, 40, "<br />\n", true)!!}</header>
-
+                @if($task->isSubtask())
+        	        <span class="mg-rt-5" data-toggle="tooltip" title="A Subtask of {{$task->parent()->present()->prettyName}}"><i class="fa fa-files-o"></i></span>
+        	    @endif
                 <span class="text-default-light pull-right" style="margin-right: 20px;"><small>Expires </small>{{$task->present()->informalDeadline}}</span>
                 @if($task->priority == 1)
                     <div class="pull-right">

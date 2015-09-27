@@ -66,6 +66,10 @@
     App.Listeners.Registration = {
         whenUserHasRegistered: function (data) {
             (new App.Notifier).notify(data.user);
+
+        },
+        whenUserHasActivated: function (data) {
+            (new App.Notifier).generateNotification(data);
         }
     };
 

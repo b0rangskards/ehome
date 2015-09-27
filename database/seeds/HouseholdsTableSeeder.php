@@ -11,7 +11,7 @@ class HouseholdsTableSeeder extends BaseTableSeeder
      */
     public function run()
     {
-	    $head = User::where('email', 'waynearila@gmail.com')->first();
+	    $head = User::where('email', 'ehome.uc@gmail.com')->first();
 
 	    factory(App\Household::class)->create([
 		   'head_id' => $head->id

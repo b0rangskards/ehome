@@ -8,6 +8,7 @@ use App\Events\TaskStatusUpdated;
 use App\Events\UserHasActivated;
 use App\Events\UserHasRegistered;
 use App\Handlers\Events\GenerateTaskUpdatedNotification;
+use App\Handlers\Events\InitializeUserSettings;
 use App\Handlers\Events\RegisterFreeTrial;
 use App\Handlers\Events\NotifyTaskMembers;
 use App\Handlers\Events\SendConfirmationEmail;
@@ -33,6 +34,7 @@ class EventServiceProvider extends ServiceProvider
 
 	    UserHasActivated::class => [
 		    RegisterFreeTrial::class,
+		    InitializeUserSettings::class,
 	    ],
 
 	    TaskHasCreated::class => [

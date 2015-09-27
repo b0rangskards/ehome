@@ -11,12 +11,12 @@ class UsersTableSeeder extends BaseTableSeeder
      */
     public function run()
     {
-	    factory(App\User::class, 'admin')->create([
+	   factory(App\User::class, 'admin')->create([
 		    'email' => 'admin@gmail.com'
 	    ]);
 
 	    $head = factory(App\User::class, 'head')->create([
-		   'email' => 'waynearila@gmail.com'
+		   'email' => 'ehome.uc@gmail.com'
 	    ]);
 
 	    // add subscription for head

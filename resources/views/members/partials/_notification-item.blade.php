@@ -1,4 +1,4 @@
-<a data-recipient="{{$currentUser->id}}" class="alert alert-callout alert-success notification {{$notification->seen==1?'seen':''}}" href="{{$notification->link}}">
+<a data-recipient="{{$currentUser->id}}" data-id="{{$notification->id}}" class="alert alert-callout alert-success notification {{$notification->seen==1?'seen':''}}" href="{{$notification->link}}">
     <img class="pull-left img-circle dropdown-avatar" src="{{ asset('images/icon-user-default.png') }}" alt="" />
     <strong>{{$notification->sender->present()->prettyName}}</strong>
     <span class="time">{{ $notification->present()->informalSentDate }}</span>

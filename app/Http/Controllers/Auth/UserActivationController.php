@@ -33,8 +33,6 @@ class UserActivationController extends Controller
 	    $user = User::where('activation_code', $activationCode)->first();
 
 	    return view('auth.activate', compact('user'));
-
-
     }
 
 	/**

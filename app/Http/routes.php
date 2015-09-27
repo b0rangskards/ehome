@@ -13,22 +13,19 @@
 
 /* Public pages */
 use App\Events\SampleEvent;
-use App\Events\UserHasRegistered;
-use App\Notification;
-use App\Repositories\UserRepository;
-use App\SubscriptionType;
+use App\Sms\SmsMessageBuilder;
 use App\Task;
-use App\TaskNote;
 use App\User;
 
 Route::get('/', ['as'   => 'public.landing', 'uses' => 'PublicController@showLandingPage']);
 Route::get('/error', ['as' => 'public.error', 'uses' => 'PublicController@showErrorPage']);
 
-/* Auth, Registration pages */
+	/* Auth, Registration pages */
 Route::group(['prefix' => 'auth', 'as' => 'auth.'], function(){
 	// Sign in routes
 	Route::get('login', ['as' => 'login', 'uses' => 'Auth\AuthController@getLogin']);
 	Route::post('login', ['as' => 'login', 'uses' => 'Auth\AuthController@postLogin']);
+
 	// Log out route
 	Route::get('logout', ['as' => 'logout', 'uses' => 'Auth\AuthController@getLogout']);
 	// Registration routes
@@ -41,7 +38,10 @@ Route::group(['prefix' => 'auth', 'as' => 'auth.'], function(){
 /* Admin pages */
 Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
 	Route::get('dashboard', ['as' => 'dashboard', 'uses' => 'Admin\AdminPagesController@getDashboard']);
+	/* Users Route */
 	Route::get('users', ['as' => 'users.index', 'uses' => 'Admin\UsersController@index']);
+	Route::put('users/{user}/revoke', ['as' => 'users.revoke', 'uses' => 'Admin\UsersController@revokeBan']);
+	Route::delete('users/{user}/ban', ['as' => 'users.ban', 'uses' => 'Admin\UsersController@banUser']);
 });
 
 /* Member pages */
@@ -53,6 +53,9 @@ Route::resource('task', 'TasksController');
 Route::patch('/task/{task}/confirm', ['as' => 'task.confirm', 'uses' => 'TasksController@confirm']);
 Route::patch('/task/{task}/status', ['as' => 'task.update.status', 'uses' => 'TasksController@updateStatus']);
 Route::post('/task/{task}/add-note', ['as' => 'task.add-note', 'uses' => 'TasksController@addNote']);
+
+Route::get('user/{user}/task', 'TasksController@getUserTasks');
+
 
 Route::get('/notifications', ['as' => 'notification.index', 'uses' => 'NotificationsController@index']);
 Route::patch('/notification/markseen', ['as' => 'notification.markseen', 'uses' => 'NotificationsController@markSeen']);
@@ -72,13 +75,13 @@ Route::get('/subscriptions/{user}/extend/{subscription_type}/success', ['as' => 
 Route::get('/subscriptions/{user}/history', ['as' => 'subscriptions.history', 'uses' => 'UserSubscriptionsController@getHistory']);
 /* Test route */
 Route::get('test', function () {
-	$expire_date = Carbon::create(2015, 8, 29, 7, 30);
 
-	$now = Carbon::now();
+//	$sms = SMS::send('hello world', '+639236600626');
+//	$t = Task::find(22);
 
-//	dd($expire_date->diffForHumans($now));
-	dd($now);
-//	dd(SubscriptionType::getFreeTrial());
+//	dd($t->membersWithSms()->toArray());
+	$task = Task::find(3);
+	dd($task->parent());
 });
 
 /* Route Model Binding */

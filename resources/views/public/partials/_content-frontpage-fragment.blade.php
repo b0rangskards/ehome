@@ -4,8 +4,7 @@
 	<div class="container first_page">
 
   		<div class="seven columns alpha present">
-             <h3 class="title_st">We are Coming Soon!</h3>
-             <p class="txt_st">we are the leading company in web tutorials with over 500 handpicked videos your dreams real with awseome projects.</p>
+             <h2 class="title_st" style="margin-top:40%;color:#bdc3c7">We are Coming Soon!</h2>
         </div>
 
         @include('public.partials._registration_section')

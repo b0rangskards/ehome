@@ -41,7 +41,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      */
     protected $fillable = ['firstname', 'lastname', 'middleinitial', 'gender',
 	                       'mobile_no', 'email', 'password', 'role', 'activation_code',
-	                       'activated_at', 'last_login', 'app_token', 'gcmid'];
+	                       'activated_at', 'last_login', 'banned_date', 'app_token', 'gcmid'];
 
     /**
      * The attributes excluded from the model's JSON form.
@@ -288,6 +288,10 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	{
 		return !is_null($this->deleted_at);
 	}
+	public function isBanned()
+	{
+		return !(is_null($this->deleted_at) || is_null($this->banned_date));
+	}
 
 	/* Relationships */
 
@@ -328,6 +332,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 			->where('seen', 0);
 	}
 
+	public function userSettings()
+	{
+		return $this->hasOne('App\UserSetting', 'user_id', 'id');
+	}
+
 	/* Scope Query */
 
 	public function scopeCompleted($query)
@@ -341,6 +350,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	}
 
 	/* Mutators */
+
+//	public function getCleanMobileNoAttribute()
+//	{
+//		return str_replace('+', '', $this->mobile_no);
+//	}
 
 	public function getSubscriptionAttribute()
 	{

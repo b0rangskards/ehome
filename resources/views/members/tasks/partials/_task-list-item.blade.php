@@ -29,6 +29,9 @@
                 @if($task->hasLocation())
                     <span class="mg-rt-5" data-toggle="tooltip" title="Location"><i class="fa fa-map-marker"></i></span>
         	    @endif
+        	    @if($task->isSubtask())
+        	        <span class="mg-rt-5" data-toggle="tooltip" title="A Subtask of {{$task->parent()->present()->prettyName}}"><i class="fa fa-files-o"></i></span>
+        	    @endif
         	</span>
 
         	<span class="stick-bottom-right small-padding">

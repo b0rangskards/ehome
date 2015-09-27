@@ -11,11 +11,11 @@
 								</a>
 							</div>
 						</li>
-						{{--<li>--}}
-							{{--<a class="btn btn-icon-toggle menubar-toggle" data-toggle="menubar" href="javascript:void(0);">--}}
-								{{--<i class="fa fa-bars"></i>--}}
-							{{--</a>--}}
-						{{--</li>--}}
+						<li>
+							<a class="btn btn-icon-toggle menubar-toggle" data-toggle="menubar" href="javascript:void(0);">
+								<i class="fa fa-bars"></i>
+							</a>
+						</li>
 					</ul>
 				</div>
 
@@ -59,6 +59,7 @@
 								<li class="dropdown-header">Config</li>
 
 								<li><a href="{{route('profile.index', $currentUser->present()->slugName)}}">Profile</a></li>
+								<li><a href="{{route('profile.settings', $currentUser->present()->slugName)}}">Settings</a></li>
 
 								<li><a href="{{route('task.index')}}">My Tasks
                                     @if($currentUser->pendingTasks()->count())

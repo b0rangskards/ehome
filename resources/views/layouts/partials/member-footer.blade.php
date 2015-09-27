@@ -19,6 +19,8 @@
 
      channel.bind('App\\Events\\UserHasRegistered', App.Listeners.Registration.whenUserHasRegistered);
 
+     channel.bind('App\\Events\\UserHasActivated', App.Listeners.Registration.whenUserHasActivated);
+
      /* When a task is created. Show alert notifications to task members. */
      channel.bind('App\\Events\\TaskHasCreated', App.Listeners.Task.whenNewTaskDelegated);
 

@@ -204,10 +204,10 @@
         /* Marking seen on Notifications */
         $('.notification:not(.seen)').on('click', function(e){
             var thisElement = $(this);
-            var link = thisElement.prop('href');
+            var id = thisElement.data('id');
             var recipientId = thisElement.data('recipient');
 
-           processAjaxRequest('PATCH', '/notification/markseen', {link: link, to_userid: recipientId})
+           processAjaxRequest('PATCH', '/notification/markseen', {id: id, to_userid: recipientId})
                .done(function(){
                    thisElement.addClass('seen');
                });

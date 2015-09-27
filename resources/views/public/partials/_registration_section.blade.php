@@ -8,7 +8,7 @@
 
                     {!! Form::open(['route' => 'auth.register', 'id' => 'registration_form']) !!}
 
-                    @include('flash::message');
+                    @include('flash::message')
 
                         <div class="contact_st">
                             <div class="contact_form">

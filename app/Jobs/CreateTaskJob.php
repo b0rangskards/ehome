@@ -75,7 +75,7 @@ class CreateTaskJob extends Job implements SelfHandling
 	 *          {$task_name} \n
 	 *          ---------------- \n
 	 *          Accept Task? \n
-	 *          Reply YES to accept and No to decline task."
+	 *          Reply YES to accept and NO to decline task."
 	 *  2. maybe persist it in database (need to create table)
 	 *  3. send sms
 	 */

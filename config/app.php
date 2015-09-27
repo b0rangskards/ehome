@@ -152,6 +152,7 @@ return [
 	    Intervention\Image\ImageServiceProvider::class,
 	    Laracasts\Utilities\JavaScript\JavascriptServiceProvider::class,
 	    Ignited\LaravelOmnipay\LaravelOmnipayServiceProvider::class,
+	    App\Providers\SmsServiceProvider::class,
 	    /*
 	     * Development Service Providers...
 	     */
@@ -212,6 +213,7 @@ return [
 	    'FileHelper'=> App\Helpers\FileHelper::class,
 	    'JavaScript'=> Laracasts\Utilities\JavaScript\JavaScriptFacade::class,
 	    'Omnipay'   => Ignited\LaravelOmnipay\Facades\OmnipayFacade::class,
+	    'SMS'       => App\Facades\Sms::class,
     ],
 
 ];

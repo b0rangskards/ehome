@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Helpers\FileHelper;
+use App\Sms\SmsMessageBuilder;
 use Carbon;
 use DB;
 use File;
@@ -205,6 +206,14 @@ class Task extends Model
 		return Carbon::parse($this->due_at) <= Carbon::now();
 	}
 
+	public function parent()
+	{
+		if($this->parent_id){
+			return Task::find($this->parent_id);
+		}
+		return null;
+	}
+
 	public function isImportant()
 	{
 		return $this->priority === 1;
@@ -230,6 +239,14 @@ class Task extends Model
 		return $this->household->getImagesBaseUrl() . '/task/' . $this->image;
 	}
 
+	public function smsCreateMessage()
+	{
+		return SmsMessageBuilder::newTask(
+				$this->household->head->present()->prettyName,
+				$this->present()->prettyName
+		);
+	}
+
 	/* Relationships */
 
 	public function household()
@@ -241,6 +258,40 @@ class Task extends Model
 	{
 		return $this->belongsToMany('App\User', 'task_members')
 			->withPivot('accepted');
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function membersWithSms()
+	{
+		$members = $this->members->lists('id')->toArray();
+
+		return User::with('userSettings')
+					->whereHas('userSettings', function($query){
+						$query->where('receive_sms', true);
+					})
+					->whereIn('id', $members)
+					->where('mobile_no', '<>', '')
+					->whereNotNull('mobile_no')
+					->get();
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function membersWithMobileNotifications()
+	{
+		$members = $this->members->lists('id')->toArray();
+
+		return User::with('userSettings')
+			->whereHas('userSettings', function ($query) {
+				$query->where('receive_notifications_mobile', true);
+			})
+			->whereIn('id', $members)
+			->where('gcmid', '<>', '')
+			->WhereNotNull('gcmid')
+			->get();
 	}
 
 	public function subtasks()

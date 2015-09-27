@@ -48,6 +48,13 @@ class UserRepository implements RepositoryInterface{
 			->get();
 	}
 
+	public static function getTableDataWithTrash()
+	{
+		return User::withTrashed()
+			->where('id', '<>', Auth::user()->id)
+			->get();
+	}
+
 	public static function getTableHeader()
 	{
 		return [

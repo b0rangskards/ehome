@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\MarkNotificationSeen;
 use App\Notification;
+use App\User;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -24,12 +26,14 @@ class NotificationsController extends Controller
 
     public function markSeen(Request $request)
     {
-	    $markSeen = Notification::markSeen($request->input('to_userid'), $request->input('link'));
+	    if(!User::find($request->input('to_userid'))) return Response::json(['message' => 'Problem processing your request.'], 422);
+
+	    $markSeen = $this->dispatch(new MarkNotificationSeen($request->input('id')));
 
 	    if(!boolval($markSeen)) {
 	        return Response::json(['message' => 'Problem processing your request.'], 422);
         }
 
-	    return Response::json();
+	    return Response::json(['message' => 'seen'], 200);
     }
 }

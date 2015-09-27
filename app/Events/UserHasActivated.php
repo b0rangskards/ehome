@@ -3,6 +3,7 @@
 namespace App\Events;
 
 use App\Events\Event;
+use App\Notification;
 use App\Repositories\UserRepository;
 use App\User;
 use Illuminate\Queue\SerializesModels;
@@ -15,6 +16,7 @@ class UserHasActivated extends Event implements ShouldBroadcast
 	 * @var User
 	 */
 	public $user;
+	public $notification;
 
 	/**
 	 * Create a new event instance.
@@ -25,6 +27,7 @@ class UserHasActivated extends Event implements ShouldBroadcast
     public function __construct(User $user)
     {
 	    $this->user = $user;
+	    $this->notification = Notification::createUserHasActivated($user)->getTransformedData();
     }
 
     /**
@@ -35,7 +38,7 @@ class UserHasActivated extends Event implements ShouldBroadcast
     public function broadcastOn()
     {
 	    if($this->user->isMember()) {
-		    return $this->user->household->head->getChannel();
+		    return [$this->user->household->head->getChannel()];
 	    }
 
 	    return UserRepository::getAllAdminChannels();

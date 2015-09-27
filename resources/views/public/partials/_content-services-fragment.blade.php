@@ -20,11 +20,11 @@
                         </div>
 
                         <br>
-                        <p class="a3_style">5 Projects</p>
-                        <p class="a3_style">1 GB Storage</p>
-                        <p class="a3_style">No Domain</p>
-                        <p class="a3_style">1 User</p>
-                        <p class="a3_style"><span class="fsc1">0$</span><sup>/m</sup> </p>
+                        <p class="a3_style">15 Days</p>
+                        <p class="a3_style">Unlimited Task</p>
+                        <p class="a3_style">Unlimited Members</p>
+                        <p class="a3_style">Up to 30 SMS Credits</p>
+                        <p class="a3_style"><span class="fsc1">PHP 0</span></p>
 
                         <div class="a_bloc3_style">
                             <div class="subscribe_st">
@@ -37,16 +37,16 @@
                <div class="one-third column ">
                     <div class="th2_style">
                         <div class="b_bloc1_style">
-                            <p class="b1_style">Personal</p>
+                            <p class="b1_style">Premium</p>
                             <p class="b2_style">Get All The Features</p>
                         </div>
 
                         <br>
-                        <p class="b3_style">25 Projects</p>
-                        <p class="b3_style">50 GB Storage</p>
-                        <p class="b3_style">with 1 Domain</p>
-                        <p class="b3_style">10 Users</p>
-                        <p class="b3_style"><span class="fsc2">9,99$</span><sup>/m</sup> </p>
+                        <p class="b3_style">60 days</p>
+                        <p class="a3_style">Unlimited Task</p>
+                        <p class="a3_style">Unlimited Members</p>
+                        <p class="a3_style">Unlimited SMS Credits</p>
+                        <p class="b3_style"><span class="fsc2">PHP 700</span></p>
 
                         <div class="b_bloc3_style">
                             <div class="subscribe_st">

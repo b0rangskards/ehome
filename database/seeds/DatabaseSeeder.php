@@ -9,6 +9,7 @@ class DatabaseSeeder extends BaseSeeder
 		'users',
 		'households',
 		'household_members',
+		'user_settings'
 	];
 
     /**

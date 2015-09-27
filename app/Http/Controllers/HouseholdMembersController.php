@@ -70,7 +70,7 @@ class HouseholdMembersController extends Controller
 
 	    $this->dispatchFrom(AddNewHouseholdMemberJob::class, $request);
 
-	    Flash::message('Successfully added member. However it requires activation on his/her email account.');
+	    Flash::message('Successfully added member. An activation link was sent to his/her email account.');
 
 	    return redirect($this->redirectPath);
     }

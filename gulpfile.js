@@ -59,7 +59,7 @@ elixir(function(mix) {
         'constants.js',
         dir.coreJs + 'toastr.settings.js',
         dir.coreJs + 'App.js',
-        //dir.coreJs + 'AppNavigation.js',
+        dir.coreJs + 'AppNavigation.js',
         dir.coreJs + 'AppOffcanvas.js',
         dir.coreJs + 'AppCard.js',
         dir.coreJs + 'AppForm.js',

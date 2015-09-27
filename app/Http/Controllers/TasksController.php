@@ -9,6 +9,7 @@ use App\Jobs\CreateTaskJob;
 use App\Jobs\UpdateTaskJob;
 use App\Jobs\UpdateTaskStatusJob;
 use App\Task;
+use App\User;
 use Config;
 use Illuminate\Http\Request;
 use App\Http\Requests;
@@ -24,9 +25,9 @@ class TasksController extends Controller
 
 	function __construct()
 	{
-		$this->middleware('auth');
+		$this->middleware('auth', ['except' => ['getUserTasks']]);
 
-		$this->middleware('household.check');
+		$this->middleware('household.check', ['except' => ['getUserTasks']]);
 
 		$this->middleware('check.subscription',['only' => ['create', 'store']]);
 
@@ -212,6 +213,13 @@ class TasksController extends Controller
 		$note = $this->dispatchFrom(AddTaskNoteJob::class, $request);
 
 		return Response::json(['note' => $note], 200);
+	}
+
+	public function getUserTasks(User $user)
+	{
+		return $user->isHead()
+			? $user->household->tasks()->get()
+			: $user->tasks()->get();
 	}
 
 }

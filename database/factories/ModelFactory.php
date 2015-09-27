@@ -41,6 +41,15 @@ $factory->defineAs(App\Subscription::class, 'premium', function ($faker) {
 	];
 });
 
+$factory->define(App\UserSetting::class, function ($faker) {
+	$userId = $faker->randomElement(User::lists('id')->toArray());
+
+	return [
+		'user_id' => $userId
+	];
+});
+
+
 $factory->define(App\User::class, function ($faker) {
 	$ptBRFaker = Faker\Factory::create('pt_BR');
 	$middleInitial = substr($faker->lastName, 0, 1);

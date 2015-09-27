@@ -60,6 +60,20 @@ class Notification extends Model
 		]);
 	}
 
+	public static function createUserHasActivated(User $user)
+	{
+		$toUserId = $user->isMember()
+					? $user->household->head->id
+					: $user->id;
+
+		return static::create([
+			'title' => $user->present()->prettyName . ' has Activated his/her Account.',
+			'to_userid' => $toUserId,
+			'from_userid' => $user->id,
+			'link' => ''
+		]);
+	}
+
 	public static function createFromTask(Task $task)
 	{
 		$notification = null;
@@ -123,11 +137,9 @@ class Notification extends Model
 		return $transformer->transform($this);
 	}
 
-	public static function markSeen($recipientId, $link)
+	public static function markSeen($id)
 	{
-		$notification = Notification::where('link', $link)
-							->where('to_userid', $recipientId)
-							->first();
+		$notification = Notification::find($id);
 
 		if (!$notification) return false;
 
